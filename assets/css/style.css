@@ -5,8 +5,7 @@
     height: 100vh;
     padding:4px;
     background: url('../images/grid.jpg');
-    
-    background: url('https://jquery-plugins.net/image/plugin/changing-background-color-while-scrolling-with-jquery.png');
+    background: url('https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -22,3 +21,4 @@
     width:100px;
     background: #000000;
 }
+
