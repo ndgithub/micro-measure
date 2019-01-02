@@ -1,0 +1,24 @@
+#micro_container {
+    border: 4px solid #000000;
+    text-align: center;
+    width: 100vw;
+    height: 100vh;
+    padding:4px;
+    background: url('../images/grid.jpg');
+    
+    background: url('https://jquery-plugins.net/image/plugin/changing-background-color-while-scrolling-with-jquery.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+
+}
+
+#micro {
+    border: 1px solid #000000;
+    
+}
+#block {
+    height: 100px;
+    width:100px;
+    background: #000000;
+}
