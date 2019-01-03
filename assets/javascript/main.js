@@ -2,10 +2,14 @@
 // [w,h]
 var bgImgY;
 var bgImgX;
+var bgPosX;
+var bgPosY;
 
 //Original Image Dimensions
-var origX = 1000;
-var origY = 1000;
+var origX = 5184;
+var origY = 3456;
+
+// 5184 × 3456
 
 
 // #micro_container dimensions
@@ -16,10 +20,10 @@ var containerY = $("#micro_container").height();
 // origX = 272;
 // origY = 92;
 
-function getBgImageDims() {
+function setInitBgImageSize() {
     var ratioY = origY / containerY; //.2
     bgImgY = origY / ratioY; //460 
-    bgImgX = origX /ratioY; //1360
+    bgImgX = origX / ratioY; //1360
 
     var newRatioX = bgImgX / containerX; // 1.1
     if (newRatioX >= 1) {
@@ -27,16 +31,74 @@ function getBgImageDims() {
         bgImgY = bgImgY / newRatioX; // 469 / 1.1
     }
 }
-//1080p is vertical 
-getBgImageDims();
+
+function setInitBgPos() {
+    bgPosX = (containerX - bgImgX) / 2;
+    bgPosY = (containerY - bgImgY) / 2;
+}
+
+function updateBgSize() {
+    $("#micro_container").css("background-size", Math.floor(bgImgX) + "px " + Math.floor(bgImgY) + "px");
+}
+
+function updateBgPos() {
+    $("#micro_container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
+}
+
+function setClickListeners() {
+    $("#micro_container").hover(
+        
+        function () {
+            $(this).css("border","8px solid #ff0000");
+            $("body").on("keypress", function (event) {
+                console.log("event.which " + event.keyCode);
+                //press i, zoom in
+                switch (event.keyCode) {
+                    case 105:
+                        bgImgX = bgImgX * 1.01;
+                        bgImgY = bgImgY * 1.01;
+                        break;
+                    case 107:
+                        bgImgX = bgImgX * 0.99;
+                        bgImgY = bgImgY * 0.99;
+                        break;
+                    case 100: // d
+                        bgPosX+=5;
+                        break;
+                    case 97: //
+                        bgPosX-=5;
+                        break;
+                    case 119: // w
+                        bgPosY-=5;
+                        break;
+                    case 115: //s
+                        bgPosY+=5;
+                        break;
+                    default:
+                    // code block
+                }
+
+                updateBgSize();
+                updateBgPos();
+            })
+        },
+        function (event) {
+            $(this).css("border","8px solid #000000");
+            $("body").off("keypress")
+        }
+    );
 
 
-var bgPosX  = (containerX - bgImgX) / 2;
-var bgPosY = (containerY - bgImgY) / 2;
+}
 
-$("#micro_container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
-$("#micro_container").css("background-size", Math.floor(bgImgX) + "px " + Math.floor(bgImgY) + "px");
 
+
+//-------------------
+setInitBgImageSize();
+setInitBgPos();
+updateBgSize();
+updateBgPos();
+setClickListeners();
 
 
 console.log("origX", origX);

@@ -3,19 +3,13 @@
     text-align: center;
     width: 100vw;
     height: 100vh;
-    padding:4px;
     background: url('https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png');
-    background: url('../images/grid.jpg');
+    background: url('../images/beach.jpg');
     background-repeat: no-repeat;
-    background-position:-200px 0px;
-    
-
-
 }
 
 #micro {
     border: 1px solid #000000;
-    
 }
 #block {
     height: 100px;
