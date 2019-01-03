@@ -1,63 +1,62 @@
 //This is what we need. What did the micro image get resized to;
 // [w,h]
-var bgImgHt;
-var bgImgWt;
+var bgImgY;
+var bgImgX;
 
 //Original Image Dimensions
-var origWt = 272;
-var origHt = 92;
+var origX = 1000;
+var origY = 1000;
 
 
 // #micro_container dimensions
-var containerWt = $("#micro_container").width();
-var containerHt = $("#micro_container").height();
-
-console.log("containerWt1 + " + containerWt);
-console.log("containerHt1 + " + containerHt);
+var containerX = $("#micro_container").width();
+var containerY = $("#micro_container").height();
 
 
-// origWt = 272;
-// origHt = 92;
+// origX = 272;
+// origY = 92;
 
-// containerWt = 1280
-// containerHt = 496
 function getBgImageDims() {
-    var ratioHt = origHt / containerHt; //.2
-    bgImgHt = origHt / ratioHt; //460 
-    bgImgWt = origWt /ratioHt; //1360
-    
+    var ratioY = origY / containerY; //.2
+    bgImgY = origY / ratioY; //460 
+    bgImgX = origX /ratioY; //1360
 
-    var newRatioWt = bgImgWt / containerWt; // 1.1
-    if (newRatioWt >= 1) {
-        bgImgWt = containerWt; //1280
-        bgImgHt = bgImgHt / newRatioWt; // 469 / 1.1
+    var newRatioX = bgImgX / containerX; // 1.1
+    if (newRatioX >= 1) {
+        bgImgX = containerX; //1280
+        bgImgY = bgImgY / newRatioX; // 469 / 1.1
     }
 }
 //1080p is vertical 
 getBgImageDims();
 
 
+var bgPosX  = (containerX - bgImgX) / 2;
+var bgPosY = (containerY - bgImgY) / 2;
+
+$("#micro_container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
+$("#micro_container").css("background-size", Math.floor(bgImgX) + "px " + Math.floor(bgImgY) + "px");
 
 
 
-console.log("origWt", origWt);
-console.log("origHt", origHt);
+console.log("origX", origX);
+console.log("origY", origY);
 
-console.log("containerWt", containerWt);
-console.log("containerHt", containerHt);
+console.log("containerX", containerX);
+console.log("containerY", containerY);
 
-console.log("bgImgWt", bgImgWt);
-console.log("bgImgHt", bgImgHt);
+console.log("bgImgX", bgImgX);
+console.log("bgImgY", bgImgY);
+
+console.log("bgPosX: " + bgPosX);
+console.log(bgPosX + "px " + Math.floor(bgPosY) + "px");
+
+
+
 
 
 //Image is 1000x1000
 
-//I need the size of the image and point on the image that the mouse is.
-    //Know the original size, it's contained in #micro_container
-        //Both dimensions must be less than #micro_contaiers.
-
-
-//Then i need 
 
 function showRed() {
     $("#block").css("background-color", "#ff0000");
@@ -68,4 +67,4 @@ function showBlack() {
     console.log("hi");
 }
 
-$("#sidebar").hover(showRed, showBlack);
+$("#block").hover(showRed, showBlack);
