@@ -37,18 +37,14 @@ function setInitBgPos() {
 }
 
 function fixPositionAfterSizeChange() {
-    //var containerCenterX = containerX/2;
-    //var containerCenterY = containerY/2;
 
-    var containerCenterX_relToImgCorner = containerX/2 - bgPosX;
-    var containerCenterY_relToImgCorner = containerY/2 - bgPosY;
+    var containerCenterX_relToImgCorner = containerX / 2 - bgPosX;
+    var containerCenterY_relToImgCorner = containerY / 2 - bgPosY;
 
-    var containerCenterX_relToImgCorner_percent = ((containerX/2) - bgPosX) / bgSizeX ;
-    var containerCenterY_relToImgCorner_percent = ((containerY/2) - bgPosY) / bgSizeY;
+    var containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / bgSizeX;
+    var containerCenterY_relToImgCorner_percent = ((containerY / 2) - bgPosY) / bgSizeY;
 
-    percent
 
-    //newPos = old position - x increase / 2
 
 }
 
@@ -71,12 +67,22 @@ function setClickListeners() {
                     case 105:
                         var old_bgSizeX = bgSizeX;
                         var old_bgSizeY = bgSizeY;
+
+                        var old_containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / old_bgSizeX;
+                        var old_containerCenterY_relToImgCorner_percent = ((containerY / 2) - bgPosY) / old_bgSizeY;
+                        
                         bgSizeX = bgSizeX * 1.05;
                         bgSizeY = bgSizeY * 1.05;
-                        
-                        bgPosX = bgPosX - ((bgSizeX - old_bgSizeX)/2);
-                        bgPosY = bgPosY - ((bgSizeY - old_bgSizeY)/2);
 
+                        var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * bgSizeX;
+                        var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * bgSizeX) + bgPosX;
+                        var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerX/2);
+                        bgPosX -= offsetX;
+
+                        var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * bgSizeY;
+                        var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * bgSizeY) + bgPosY;
+                        var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerY/2);
+                        bgPosY -= offsetY;
 
                         break;
                     case 107:
@@ -101,7 +107,12 @@ function setClickListeners() {
 
                 updateBgSize();
                 updateBgPos();
-                
+                var containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / bgSizeX;
+                var containerCenterY_relToImgCorner_percent = ((containerY / 2) - bgPosY) / bgSizeY;
+                console.log(containerCenterX_relToImgCorner_percent);
+                console.log(containerCenterY_relToImgCorner_percent);
+
+
             })
         },
         function (event) {
