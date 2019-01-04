@@ -1,7 +1,10 @@
-//This is what we need. What did the micro image get resized to;
-// [w,h]
-var bgImgY;
-var bgImgX;
+
+//Image Dimensions
+var bgSizeY;
+var bgSizeX;
+
+
+// image Position (top left corner relative to )
 var bgPosX;
 var bgPosY;
 
@@ -9,36 +12,43 @@ var bgPosY;
 var origX = 5184;
 var origY = 3456;
 
+// 272 X 92
 // 5184 × 3456
-
 
 // #micro_container dimensions
 var containerX = $("#micro_container").width();
 var containerY = $("#micro_container").height();
-
-
-// origX = 272;
-// origY = 92;
-
+console.log(("background-position: " + $("#micro_container").css("background-position")));
 function setInitBgImageSize() {
     var ratioY = origY / containerY; //.2
-    bgImgY = origY / ratioY; //460 
-    bgImgX = origX / ratioY; //1360
+    bgSizeY = origY / ratioY; //460 
+    bgSizeX = origX / ratioY; //1360
 
-    var newRatioX = bgImgX / containerX; // 1.1
+    var newRatioX = bgSizeX / containerX; // 1.1
     if (newRatioX >= 1) {
-        bgImgX = containerX; //1280
-        bgImgY = bgImgY / newRatioX; // 469 / 1.1
+        bgSizeX = containerX; //1280
+        bgSizeY = bgSizeY / newRatioX; // 469 / 1.1
     }
 }
 
 function setInitBgPos() {
-    bgPosX = (containerX - bgImgX) / 2;
-    bgPosY = (containerY - bgImgY) / 2;
+    bgPosX = (containerX - bgSizeX) / 2;
+    bgPosY = (containerY - bgSizeY) / 2;
+}
+
+function fixPositionAfterSizeChange() {
+    //var containerCenterX = containerX/2;
+    //var containerCenterY = containerY/2;
+
+    var containerCenterAtX_relToImgCorner = containerX/2 - bgPosX;
+    var containerCenterAtY_relToImgCorner = containerY/2 - bgPosY;
+
+    //newPos = old position - x increase / 2
+
 }
 
 function updateBgSize() {
-    $("#micro_container").css("background-size", Math.floor(bgImgX) + "px " + Math.floor(bgImgY) + "px");
+    $("#micro_container").css("background-size", Math.floor(bgSizeX) + "px " + Math.floor(bgSizeY) + "px");
 }
 
 function updateBgPos() {
@@ -47,32 +57,38 @@ function updateBgPos() {
 
 function setClickListeners() {
     $("#micro_container").hover(
-        
         function () {
-            $(this).css("border","8px solid #ff0000");
+            $(this).css("border", "8px solid #ff0000");
             $("body").on("keypress", function (event) {
                 console.log("event.which " + event.keyCode);
                 //press i, zoom in
                 switch (event.keyCode) {
                     case 105:
-                        bgImgX = bgImgX * 1.01;
-                        bgImgY = bgImgY * 1.01;
+                        var old_bgSizeX = bgSizeX;
+                        var old_bgSizeY = bgSizeY;
+                        bgSizeX = bgSizeX * 1.05;
+                        bgSizeY = bgSizeY * 1.05;
+                        
+                        bgPosX = bgPosX - ((bgSizeX - old_bgSizeX)/2);
+                        bgPosY = bgPosY - ((bgSizeY - old_bgSizeY)/2);
+
+
                         break;
                     case 107:
-                        bgImgX = bgImgX * 0.99;
-                        bgImgY = bgImgY * 0.99;
+                        bgSizeX = bgSizeX * 0.95;
+                        bgSizeY = bgSizeY * 0.95;
                         break;
                     case 100: // d
-                        bgPosX+=5;
+                        bgPosX += 20;
                         break;
                     case 97: //
-                        bgPosX-=5;
+                        bgPosX -= 20;
                         break;
                     case 119: // w
-                        bgPosY-=5;
+                        bgPosY -= 20;
                         break;
                     case 115: //s
-                        bgPosY+=5;
+                        bgPosY += 20;
                         break;
                     default:
                     // code block
@@ -83,16 +99,13 @@ function setClickListeners() {
             })
         },
         function (event) {
-            $(this).css("border","8px solid #000000");
+            $(this).css("border", "8px solid #000000");
             $("body").off("keypress")
         }
     );
 
 
 }
-
-
-
 //-------------------
 setInitBgImageSize();
 setInitBgPos();
@@ -107,11 +120,12 @@ console.log("origY", origY);
 console.log("containerX", containerX);
 console.log("containerY", containerY);
 
-console.log("bgImgX", bgImgX);
-console.log("bgImgY", bgImgY);
+console.log("bgSizeX", bgSizeX);
+console.log("bgSizeY", bgSizeY);
 
 console.log("bgPosX: " + bgPosX);
 console.log(bgPosX + "px " + Math.floor(bgPosY) + "px");
+console.log(("background-position: " + $("#micro_container").css("background-position")));
 
 
 
