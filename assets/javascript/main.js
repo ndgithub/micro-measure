@@ -9,8 +9,10 @@ var bgPosX;
 var bgPosY;
 
 //Original Image Dimensions
-var origX = 5184;
-var origY = 3456;
+var origX = 1000;
+var origY = 1000;
+
+var clickPoints = [];
 
 // 272 X 92
 // 5184 × 3456
@@ -56,9 +58,14 @@ function updateBgPos() {
     $("#micro_container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
 }
 
+
 function setClickListeners() {
     $("#micro_container").hover(
         function () {
+            $("#micro_container").on("click",function (event) {
+                clickPoints.push(event.pageX);
+                console.log(clickPoints);
+            })
             $(this).css("border", "8px solid #ff0000");
             $("body").on("keypress", function (event) {
                 console.log("event.which " + event.keyCode);
@@ -70,6 +77,7 @@ function setClickListeners() {
                         bgSizeX = bgSizeX * 1.05;
                         bgSizeY = bgSizeY * 1.05;
 
+                        //Will putting this all in a div make this easier.
                         var old_containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / old_bgSizeX;
                         var old_containerCenterY_relToImgCorner_percent = ((containerY / 2) - bgPosY) / old_bgSizeY;
 
@@ -132,6 +140,7 @@ function setClickListeners() {
         function (event) {
             $(this).css("border", "8px solid #000000");
             $("body").off("keypress")
+            $("#micro_container").off("click")
         }
     );
 
@@ -177,3 +186,7 @@ function showBlack() {
 }
 
 $("#block").hover(showRed, showBlack);
+
+
+//Todos------------------
+// Make Escape Key reset image
