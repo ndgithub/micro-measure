@@ -3,7 +3,6 @@
 var bgSizeY;
 var bgSizeX;
 
-
 // image Position (top left corner relative to )
 var bgPosX;
 var bgPosY;
@@ -17,10 +16,10 @@ var clickPoints = [];
 // 272 X 92
 // 5184 × 3456
 
-// #micro_container dimensions
-var containerX = $("#micro_container").width();
-var containerY = $("#micro_container").height();
-console.log(("background-position: " + $("#micro_container").css("background-position")));
+// #micro-container dimensions
+var containerX = $("#micro-container").width();
+var containerY = $("#micro-container").height();
+console.log(("background-position: " + $("#micro-container").css("background-position")));
 function setInitBgImageSize() {
     var ratioY = origY / containerY; //.2
     bgSizeY = origY / ratioY; //460 
@@ -51,20 +50,33 @@ function fixPositionAfterSizeChange() {
 }
 
 function updateBgSize() {
-    $("#micro_container").css("background-size", Math.floor(bgSizeX) + "px " + Math.floor(bgSizeY) + "px");
+    $("#micro-container").css("background-size", Math.floor(bgSizeX) + "px " + Math.floor(bgSizeY) + "px");
 }
 
 function updateBgPos() {
-    $("#micro_container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
+    $("#micro-container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
 }
 
 
 function setClickListeners() {
-    $("#micro_container").hover(
+    $("#micro-container").hover(
         function () {
-            $("#micro_container").on("click",function (event) {
+            $("#micro-container").on("click", function (event) {
+                if (clickPoints.length === 2) {
+                    $(this).off("click");
+                    return;
+                }
                 clickPoints.push(event.pageX);
-                console.log(clickPoints);
+                var div = $("<div>");
+                div.append(event.pageX)
+                $("#scalebar-info").append(div);
+                console.log("asdf");
+                if (clickPoints.length === 2) {
+                    $(this).off("click");
+                    var length = Math.abs(clickPoints[0] - clickPoints[1]);
+                    div.append("<br> Length: " + length);
+                }
+
             })
             $(this).css("border", "8px solid #ff0000");
             $("body").on("keypress", function (event) {
@@ -126,7 +138,6 @@ function setClickListeners() {
                     default:
                     // code block
                 }
-
                 updateBgSize();
                 updateBgPos();
                 var containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / bgSizeX;
@@ -140,7 +151,7 @@ function setClickListeners() {
         function (event) {
             $(this).css("border", "8px solid #000000");
             $("body").off("keypress")
-            $("#micro_container").off("click")
+            $("#micro-container").off("click")
         }
     );
 
@@ -167,10 +178,7 @@ console.log("bgSizeY", bgSizeY);
 
 console.log("bgPosX: " + bgPosX);
 console.log(bgPosX + "px " + Math.floor(bgPosY) + "px");
-console.log(("background-position: " + $("#micro_container").css("background-position")));
-
-
-
+console.log(("background-position: " + $("#micro-container").css("background-position")));
 
 
 //Image is 1000x1000
