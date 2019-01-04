@@ -40,8 +40,13 @@ function fixPositionAfterSizeChange() {
     //var containerCenterX = containerX/2;
     //var containerCenterY = containerY/2;
 
-    var containerCenterAtX_relToImgCorner = containerX/2 - bgPosX;
-    var containerCenterAtY_relToImgCorner = containerY/2 - bgPosY;
+    var containerCenterX_relToImgCorner = containerX/2 - bgPosX;
+    var containerCenterY_relToImgCorner = containerY/2 - bgPosY;
+
+    var containerCenterX_relToImgCorner_percent = ((containerX/2) - bgPosX) / bgSizeX ;
+    var containerCenterY_relToImgCorner_percent = ((containerY/2) - bgPosY) / bgSizeY;
+
+    percent
 
     //newPos = old position - x increase / 2
 
@@ -96,6 +101,7 @@ function setClickListeners() {
 
                 updateBgSize();
                 updateBgPos();
+                
             })
         },
         function (event) {
@@ -112,6 +118,8 @@ setInitBgPos();
 updateBgSize();
 updateBgPos();
 setClickListeners();
+
+
 
 
 console.log("origX", origX);
