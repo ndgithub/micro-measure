@@ -1,52 +1,44 @@
+//Summary 
+
 
 //Image Dimensions
 var bgSizeY;
 var bgSizeX;
 
-// image Position (top left corner relative to )
+// Image Position (top left corner relative to )
 var bgPosX;
 var bgPosY;
 
-//Original Image Dimensions
-var origX = 1000;
-var origY = 1000;
+// Original Image Dimensions
+var origSizeX = 735;
+var origSizeY = 547;
 
 var clickPoints = [];
+
+var isHovering;
 
 // 272 X 92
 // 5184 × 3456
 
 // #micro-container dimensions
-var containerX = $("#micro-container").width();
-var containerY = $("#micro-container").height();
-console.log(("background-position: " + $("#micro-container").css("background-position")));
-function setInitBgImageSize() {
-    var ratioY = origY / containerY; //.2
-    bgSizeY = origY / ratioY; //460 
-    bgSizeX = origX / ratioY; //1360
+var containerSizeX = $("#micro-container").width();
+var containerSizeY = $("#micro-container").height();
 
-    var newRatioX = bgSizeX / containerX; // 1.1
+function setInitBgImageSize() {
+    var ratioY = origSizeY / containerSizeY; //.2
+    bgSizeY = origSizeY / ratioY; //460 
+    bgSizeX = origSizeX / ratioY; //1360
+
+    var newRatioX = bgSizeX / containerSizeX; // 1.1
     if (newRatioX >= 1) {
-        bgSizeX = containerX; //1280
+        bgSizeX = containerSizeX; //1280
         bgSizeY = bgSizeY / newRatioX; // 469 / 1.1
     }
 }
 
 function setInitBgPos() {
-    bgPosX = (containerX - bgSizeX) / 2;
-    bgPosY = (containerY - bgSizeY) / 2;
-}
-
-function fixPositionAfterSizeChange() {
-
-    var containerCenterX_relToImgCorner = containerX / 2 - bgPosX;
-    var containerCenterY_relToImgCorner = containerY / 2 - bgPosY;
-
-    var containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / bgSizeX;
-    var containerCenterY_relToImgCorner_percent = ((containerY / 2) - bgPosY) / bgSizeY;
-
-
-
+    bgPosX = (containerSizeX - bgSizeX) / 2;
+    bgPosY = (containerSizeY - bgSizeY) / 2;
 }
 
 function updateBgSize() {
@@ -57,10 +49,11 @@ function updateBgPos() {
     $("#micro-container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
 }
 
-
 function setClickListeners() {
     $("#micro-container").hover(
         function () {
+            isHovering = true;
+            console.log('isHovering', isHovering)
             $("#micro-container").on("click", function (event) {
                 if (clickPoints.length === 2) {
                     $(this).off("click");
@@ -78,7 +71,7 @@ function setClickListeners() {
                 }
 
             })
-            $(this).css("border", "8px solid #ff0000");
+            $(this).css("border", "4px solid #ff0000");
             $("body").on("keypress", function (event) {
                 console.log("event.which " + event.keyCode);
                 //press i, zoom in
@@ -90,17 +83,17 @@ function setClickListeners() {
                         bgSizeY = bgSizeY * 1.05;
 
                         //Will putting this all in a div make this easier.
-                        var old_containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / old_bgSizeX;
-                        var old_containerCenterY_relToImgCorner_percent = ((containerY / 2) - bgPosY) / old_bgSizeY;
+                        var old_containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / old_bgSizeX;
+                        var old_containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / old_bgSizeY;
 
                         var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * bgSizeX;
                         var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * bgSizeX) + bgPosX;
-                        var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerX / 2);
+                        var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerSizeX / 2);
                         bgPosX -= offsetX;
 
                         var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * bgSizeY;
                         var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * bgSizeY) + bgPosY;
-                        var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerY / 2);
+                        var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerSizeY / 2);
                         bgPosY -= offsetY;
 
                         break;
@@ -110,17 +103,17 @@ function setClickListeners() {
 
                         bgSizeX = bgSizeX * 0.95;
                         bgSizeY = bgSizeY * 0.95;
-                        var old_containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / old_bgSizeX;
-                        var old_containerCenterY_relToImgCorner_percent = ((containerY / 2) - bgPosY) / old_bgSizeY;
+                        var old_containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / old_bgSizeX;
+                        var old_containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / old_bgSizeY;
 
                         var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * bgSizeX;
                         var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * bgSizeX) + bgPosX;
-                        var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerX / 2);
+                        var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerSizeX / 2);
                         bgPosX -= offsetX;
 
                         var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * bgSizeY;
                         var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * bgSizeY) + bgPosY;
-                        var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerY / 2);
+                        var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerSizeY / 2);
                         bgPosY -= offsetY;
                         break;
                     case 100: // d
@@ -140,8 +133,8 @@ function setClickListeners() {
                 }
                 updateBgSize();
                 updateBgPos();
-                var containerCenterX_relToImgCorner_percent = ((containerX / 2) - bgPosX) / bgSizeX;
-                var containerCenterY_relToImgCorner_percent = ((containerY / 2) - bgPosY) / bgSizeY;
+                var containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / bgSizeX;
+                var containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / bgSizeY;
                 console.log(containerCenterX_relToImgCorner_percent);
                 console.log(containerCenterY_relToImgCorner_percent);
 
@@ -149,13 +142,13 @@ function setClickListeners() {
             })
         },
         function (event) {
-            $(this).css("border", "8px solid #000000");
+            isHovering = false;
+            console.log('isHovering', isHovering);
+            $(this).css("border", "4px solid #000000");
             $("body").off("keypress")
             $("#micro-container").off("click")
         }
     );
-
-
 }
 //-------------------
 setInitBgImageSize();
@@ -167,11 +160,11 @@ setClickListeners();
 
 
 
-console.log("origX", origX);
-console.log("origY", origY);
+console.log("origSizeX", origSizeX);
+console.log("origSizeY", origSizeY);
 
-console.log("containerX", containerX);
-console.log("containerY", containerY);
+console.log("containerSizeX", containerSizeX);
+console.log("containerSizeY", containerSizeY);
 
 console.log("bgSizeX", bgSizeX);
 console.log("bgSizeY", bgSizeY);
@@ -198,3 +191,4 @@ $("#block").hover(showRed, showBlack);
 
 //Todos------------------
 // Make Escape Key reset image
+// Thing that show this is original image size

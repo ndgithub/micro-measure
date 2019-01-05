@@ -4,31 +4,72 @@ body {
 }
 
 #micro-container {
-    border: 4px solid #000000;
+    border: 1px solid #000000;
     text-align: center;
     width: 70%;
     height: 100%;
     background: url('https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png');
-    background: url('../images/grid.jpg');
+    background: url('../images/steel.png');
     background-repeat: no-repeat;
     background-position: 0px 0px;
     float: left;
 }
+.overlay {
+    
+}
 
-#overlay {
-    height: 100%;
+#overlay-top {
     width: 100%;
-    background: #000000;
-    opacity: 0.2;
+    height: 10%;
+    background:#000000;
+    opacity: 0.8;
+}
+
+#overlay-middle-row {
+    height: 80%;
+    width: 100%;
+    
+}
+
+#overlay-middle-left {
+    height: 100%;
+    width: 6%;
+    float: left;
+    background:#000000;
+    opacity: 0.8;
+
+}
+
+#overlay-center {
+    height: 100%;
+    width: 88%;
+    opacity: 1;
+    float: left;
+
+}
+
+#overlay-middle-right {
+    height: 100%;
+    width: 6%;
+
+    float: left;
+    background:#000000;
+    opacity: 0.8;
+
+}
+
+#overlay-bottom {
+    height: 10%;
+    width: 100%;
+    /*border: 4px solid #ff00ff;*/
+    background:#000000;
+    opacity: 0.8;
 }
 
 #sidebar {
     width: 25%;
     background: #ffcccc;
-    
     float: left;
 }
 
-#scalebar-info {
-
-}
+#scalebar-info {}
