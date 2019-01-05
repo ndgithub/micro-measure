@@ -9,7 +9,7 @@ body {
     width: 70%;
     height: 100%;
     background: url('https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png');
-    background: url('../images/steel.png');
+    background: url('../images/beach.jpg');
     background-repeat: no-repeat;
     background-position: 0px 0px;
     float: left;
@@ -22,7 +22,7 @@ body {
     width: 100%;
     height: 10%;
     background:#000000;
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 #overlay-middle-row {
@@ -36,15 +36,16 @@ body {
     width: 6%;
     float: left;
     background:#000000;
-    opacity: 0.8;
+    opacity: 0.7;
 
 }
 
 #overlay-center {
     height: 100%;
-    width: 88%;
+    width: 87%;
     opacity: 1;
     float: left;
+    border: 2px solid #000000;
 
 }
 
@@ -54,7 +55,7 @@ body {
 
     float: left;
     background:#000000;
-    opacity: 0.8;
+    opacity: 0.7;
 
 }
 
@@ -63,13 +64,26 @@ body {
     width: 100%;
     /*border: 4px solid #ff00ff;*/
     background:#000000;
-    opacity: 0.8;
+    opacity: 0.7;
 }
+
+#mini_view {
+    width:100%;
+    height: 200px;
+    border:1px solid #000000;
+    background: url('../images/beach.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 
 #sidebar {
     width: 25%;
     background: #ffcccc;
     float: left;
+
 }
 
 #scalebar-info {}
+

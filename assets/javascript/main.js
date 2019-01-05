@@ -10,8 +10,8 @@ var bgPosX;
 var bgPosY;
 
 // Original Image Dimensions
-var origSizeX = 735;
-var origSizeY = 547;
+var origSizeX = 5184;
+var origSizeY = 3456;
 
 var clickPoints = [];
 
@@ -71,7 +71,7 @@ function setClickListeners() {
                 }
 
             })
-            $(this).css("border", "4px solid #ff0000");
+            $(this).css("border", "2px solid #cccccc");
             $("body").on("keypress", function (event) {
                 console.log("event.which " + event.keyCode);
                 //press i, zoom in
@@ -144,7 +144,7 @@ function setClickListeners() {
         function (event) {
             isHovering = false;
             console.log('isHovering', isHovering);
-            $(this).css("border", "4px solid #000000");
+            $(this).css("border", "2px solid #000000");
             $("body").off("keypress")
             $("#micro-container").off("click")
         }
