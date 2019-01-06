@@ -10,8 +10,8 @@ var bgPosX;
 var bgPosY;
 
 // Original Image Dimensions
-var origSizeX = 5184;
-var origSizeY = 3456;
+var origSizeX = 1000;
+var origSizeY = 1000;
 
 var clickPoints = [];
 
@@ -23,6 +23,12 @@ var isHovering;
 // #micro-container dimensions
 var containerSizeX = $("#micro-container").width();
 var containerSizeY = $("#micro-container").height();
+
+setInitBgImageSize();
+setInitBgPos();
+updateBgSize();
+updateBgPos();
+setClickListeners();
 
 function setInitBgImageSize() {
     var ratioY = origSizeY / containerSizeY; //.2
@@ -47,6 +53,8 @@ function updateBgSize() {
 
 function updateBgPos() {
     $("#micro-container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
+    
+
 }
 
 function setClickListeners() {
@@ -97,7 +105,7 @@ function setClickListeners() {
                         bgPosY -= offsetY;
 
                         break;
-                    case 107:
+                    case 107: // Pressed k, zoomed out
                         var old_bgSizeX = bgSizeX;
                         var old_bgSizeY = bgSizeY;
 
@@ -117,16 +125,16 @@ function setClickListeners() {
                         bgPosY -= offsetY;
                         break;
                     case 100: // d
-                        bgPosX += 20;
-                        break;
-                    case 97: //
                         bgPosX -= 20;
                         break;
+                    case 97: //
+                        bgPosX += 20;
+                        break;
                     case 119: // w
-                        bgPosY -= 20;
+                        bgPosY += 20;
                         break;
                     case 115: //s
-                        bgPosY += 20;
+                        bgPosY -= 20;
                         break;
                     default:
                     // code block
@@ -151,11 +159,7 @@ function setClickListeners() {
     );
 }
 //-------------------
-setInitBgImageSize();
-setInitBgPos();
-updateBgSize();
-updateBgPos();
-setClickListeners();
+
 
 
 
