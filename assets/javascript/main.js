@@ -74,12 +74,11 @@ function updateBgPos() {
 function setClickforScalebarListener() {
     $("#set-scalebar-button").on("click", function () { 
         isScalebarSet = false;
+        clickPoints = [];
+        $("#scalebar-info").html("");
+
         console.log('isScalebarSet', isScalebarSet);
         $("#micro-container").on("click", function (event) { // 
-            if (clickPoints.length === 2) {
-                $(this).off("click");
-                return;
-            }
             clickPoints.push(event.pageX);
             var div = $("<div>");
             div.append(event.pageX)
