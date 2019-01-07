@@ -4,14 +4,17 @@
 // beach.jpg 5184 X 3456
 // grid.jpg 1000 X 1000
 // steel.png 360 X 240
+// leaf.jpeg 2560 X 1920
 
+////// LAYOUT STUFF ////////////////////////////////////////////////////////
 // Dimensions for #micro-container
 var containerSizeX = $("#micro-container").width();
 var containerSizeY = $("#micro-container").height();
 
+////// IMAGE STUFF ////////////////////////////////////////////////////////
 // Dimensions for original image
-var origSizeX = 5184;
-var origSizeY = 3456;
+var origSizeX = 1000;
+var origSizeY = 1000;
 
 // Dimensions of current image
 var bgSizeY;
@@ -21,6 +24,7 @@ var bgSizeX;
 var bgPosX;
 var bgPosY;
 
+// SCALEBAR STUFF ////////////////////////////////////////////////////////
 // Boolean for if the scalebar has been set (to turn off click listener)
 var isScalebarSet;
 
@@ -28,10 +32,21 @@ var isScalebarSet;
 var clickPointsContainer = [];
 
 //Array for scalebar points relative to image
-var clickPointsImage = [];
+var clickPointsImagePerc = [];
 
+// The length of the generated scalebar in screen px
+var generatedScaleBarLengthPx;
+
+//The length of the scalebar in the image (user input required)
+var imageScaleBarUnits = 100;
+
+var scaleImageRatio;
+
+// OTHER STUFF ////////////////////////////////////////////////////////
 // Boolean if hovering over #micro-container
 var isHovering;
+
+
 
 setInitBgImageSize(); // Determine what size should be and assign to variables
 setInitBgPos(); // Determine what position should be and assign to variables
@@ -69,9 +84,11 @@ function setInitBgPos() {
 
 function updateUiBgSize() {
     $("#micro-container").css("background-size", Math.floor(bgSizeX) + "px " + Math.floor(bgSizeY) + "px");
+    updateUiScaleBar();
 }
 
 function updateUiBgPos() {
+    var newPos = Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px";
     $("#micro-container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
 }
 
@@ -79,49 +96,67 @@ function resetClickPoints() {
     isScalebarSet = false;
     console.log('isScalebarSet', isScalebarSet);
     clickPointsContainer = [];
-    clickPointsImage = [];
+    clickPointsImagePerc = [];
     $("#scalebar-info").html("");
 }
 
 function updateUiClickPoint() {
     $("#scalebar-info").html("");
-    for (var i =0; i < 2; i++) {
-        $("#scalebar-info").append(clickPointsContainer[i],"<br>");
+    for (var i = 0; i < 2; i++) {
+        $("#scalebar-info").append("clickPointsContainer[" + i + "]: ", clickPointsContainer[i], "<br>");
     };
 }
+
 
 function onScalebarSet() {
     isScalebarSet = true;
     console.log('isScalebarSet', isScalebarSet);
     var length = Math.abs(clickPointsContainer[0] - clickPointsContainer[1]);
-    $("#scalebar-info").append(length);
+    $("#scalebar-info").append(length, "<br>");
+    scaleImageRatio = Math.abs(clickPointsImagePerc[0] - clickPointsImagePerc[1])
+    $("#scalebar-info").append("scaleImageRatio:", scaleImageRatio);
+    updateUiScaleBar();
+
 }
 
+function updateUiScaleBar() {
+    generatedScaleBarLengthPx = $("#scale-bar").width();
+    console.log('generatedScaleBarLengthPx', generatedScaleBarLengthPx);
+    var generatedScaleBarPercentofBgImage = generatedScaleBarLengthPx/bgSizeX;
+    var generatedScaleBarLengthUnits = (generatedScaleBarPercentofBgImage / scaleImageRatio) * imageScaleBarUnits;
+    console.log('imageScaleBarUnits', imageScaleBarUnits);
+    console.log('scaleImageRatio', scaleImageRatio);
+    console.log('generatedScaleBarLengthUnits', generatedScaleBarLengthUnits);
+    $("#scale-bar").html(Math.round(generatedScaleBarLengthUnits));
 
+}
 
 function setClickforScalebarListener() {
     $("#set-scalebar-button").on("click", function () {
         resetClickPoints();
         $("#micro-container").on("click", function (event) { // 
             clickPointsContainer.push(event.pageX);
-            var imageXpercent  = ((event.pageX) - bgPosX)/bgSizeX;
+            var imageXpercent = ((event.pageX) - bgPosX) / bgSizeX;
             console.log('imageXpercent', imageXpercent);
-            clickPointsImage.push(imageXpercent);
+            clickPointsImagePerc.push(imageXpercent);
             updateUiClickPoint();
             if (clickPointsContainer.length === 2) {
                 onScalebarSet();
-                $(this).off("click");                
+                $(this).off("click");
             }
         });
     });
 }
 
+//border same color as scale bar background;
+
+
 function setKeysForZoomListener() { // Set a keypress listener on the body for zoom and scroll
     $("body").on("keypress", function (event) {
         console.log("event.which " + event.keyCode);
         //press i, zoom in
-        switch (event.keyCode) {
-            case 105:
+        switch (event.which) {
+            case 61:
                 var old_bgSizeX = bgSizeX;
                 var old_bgSizeY = bgSizeY;
                 bgSizeX = bgSizeX * 1.05;
@@ -142,7 +177,7 @@ function setKeysForZoomListener() { // Set a keypress listener on the body for z
                 bgPosY -= offsetY;
 
                 break;
-            case 107: // Pressed k, zoomed out
+            case 45: // Pressed k, zoomed out
                 var old_bgSizeX = bgSizeX;
                 var old_bgSizeY = bgSizeY;
 
@@ -178,6 +213,8 @@ function setKeysForZoomListener() { // Set a keypress listener on the body for z
         }
         updateUiBgSize();
         updateUiBgPos();
+        
+
         var containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / bgSizeX;
         var containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / bgSizeY;
         console.log(containerCenterX_relToImgCorner_percent);
