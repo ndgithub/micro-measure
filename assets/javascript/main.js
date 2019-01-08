@@ -13,8 +13,8 @@ var containerSizeY = $("#micro-container").height();
 
 ////// IMAGE STUFF ////////////////////////////////////////////////////////
 // Dimensions for original image
-var origSizeX = 1000;
-var origSizeY = 1000;
+var origSizeX = 2560;
+var origSizeY = 1920;
 
 // Dimensions of current image
 var bgSizeY;
@@ -56,10 +56,17 @@ updateUiBgPos();  // updates image pos in UI
 setHoverListener(); // sets isHovering to true if hovering o #micro-contiainer
 setKeysForZoomListener(); // Set a keypress listener on the body for zoom and scroll
 setClickforScalebarListener();//Set a click listener on #micro-container to set scalebar ration points. Turns itself off after two clicks.
+scrollListener();
 
 
 //------------------------------------------------------//
 
+function scrollListener() {
+    $("#micro-container").scroll( function () {
+        console.log("adsfadfadfasfd");
+        alert("adsf");
+    });
+}
 
 function getContainerSize() { // Gets the container size from the DOM and sets to variables 
     containerSizeX = $("#micro-container").width();
@@ -90,6 +97,8 @@ function updateUiBgSize() {
 function updateUiBgPos() {
     var newPos = Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px";
     $("#micro-container").css("background-position", Math.floor(bgPosX) + "px " + Math.floor(bgPosY) + "px");
+    // infinty wen dist is 0
+    getMiniDims();
 }
 
 function resetClickPoints() {
@@ -109,6 +118,8 @@ function updateUiClickPoint() {
 
 
 function onScalebarSet() {
+    var input = prompt("How long is that");
+    imageScaleBarUnits = input;
     isScalebarSet = true;
     console.log('isScalebarSet', isScalebarSet);
     var length = Math.abs(clickPointsContainer[0] - clickPointsContainer[1]);
@@ -122,7 +133,7 @@ function onScalebarSet() {
 function updateUiScaleBar() {
     generatedScaleBarLengthPx = $("#scale-bar").width();
     console.log('generatedScaleBarLengthPx', generatedScaleBarLengthPx);
-    var generatedScaleBarPercentofBgImage = generatedScaleBarLengthPx/bgSizeX;
+    var generatedScaleBarPercentofBgImage = generatedScaleBarLengthPx / bgSizeX;
     var generatedScaleBarLengthUnits = (generatedScaleBarPercentofBgImage / scaleImageRatio) * imageScaleBarUnits;
     console.log('imageScaleBarUnits', imageScaleBarUnits);
     console.log('scaleImageRatio', scaleImageRatio);
@@ -148,8 +159,26 @@ function setClickforScalebarListener() {
     });
 }
 
-//border same color as scale bar background;
 
+function getMiniDims() {
+    var percentXtopLeft = -bgPosX/bgSizeX;
+    console.log('percentXtopLeft', percentXtopLeft);
+    var percentYtopLeft = -bgPosY/bgSizeY;
+    console.log('percentYtopLeft', percentYtopLeft);
+
+    var percentXbottomRight = (-bgPosX + containerSizeX) / bgSizeX;
+    console.log('percentXbottomRight', percentXbottomRight);
+    var percentYbottomRight = (-bgPosY + containerSizeY) / bgSizeY;
+    console.log('percentYbottomRight', percentYbottomRight);
+
+    var pxYtopLeft = percentYtopLeft * $("#mini-view").height()
+    $("#mini-border").css("top",pxYtopLeft + "px");
+
+    var pxXtopLeft = percentXtopLeft * $("#mini-view").width()
+    $("#mini-border").css("left",pxXtopLeft + "px");
+
+
+}
 
 function setKeysForZoomListener() { // Set a keypress listener on the body for zoom and scroll
     $("body").on("keypress", function (event) {
@@ -213,7 +242,7 @@ function setKeysForZoomListener() { // Set a keypress listener on the body for z
         }
         updateUiBgSize();
         updateUiBgPos();
-        
+
 
         var containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / bgSizeX;
         var containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / bgSizeY;
@@ -243,3 +272,8 @@ function setHoverListener() {
 //Todos------------------
 // Make Escape Key reset image
 // Thing that show this is original image size
+// MVP - Just scalebar and load image. After MVP, save image.
+
+
+// for miniview:
+ // bg postion x diviv
