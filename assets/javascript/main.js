@@ -46,6 +46,11 @@ var scaleImageRatio;
 // Boolean if hovering over #micro-container
 var isHovering;
 
+var isMouseDown;
+
+var oldX;
+var oldY;
+
 
 
 setInitBgImageSize(); // Determine what size should be and assign to variables
@@ -56,17 +61,17 @@ updateUiBgPos();  // updates image pos in UI
 setHoverListener(); // sets isHovering to true if hovering o #micro-contiainer
 setKeysForZoomListener(); // Set a keypress listener on the body for zoom and scroll
 setClickforScalebarListener();//Set a click listener on #micro-container to set scalebar ration points. Turns itself off after two clicks.
-scrollListener();
+makeDraggable();
+logStuff();
+
 
 
 //------------------------------------------------------//
 
-function scrollListener() {
-    $("#micro-container").scroll( function () {
-        console.log("adsfadfadfasfd");
-        alert("adsf");
-    });
+function logStuff() {
+    console.log(" hello" + $("#overlay-center").css("top"));
 }
+
 
 function getContainerSize() { // Gets the container size from the DOM and sets to variables 
     containerSizeX = $("#micro-container").width();
@@ -161,9 +166,9 @@ function setClickforScalebarListener() {
 
 
 function getMiniDims() {
-    var percentXtopLeft = -bgPosX/bgSizeX;
+    var percentXtopLeft = -bgPosX / bgSizeX;
     console.log('percentXtopLeft', percentXtopLeft);
-    var percentYtopLeft = -bgPosY/bgSizeY;
+    var percentYtopLeft = -bgPosY / bgSizeY;
     console.log('percentYtopLeft', percentYtopLeft);
 
     var percentXbottomRight = (-bgPosX + containerSizeX) / bgSizeX;
@@ -171,103 +176,138 @@ function getMiniDims() {
     var percentYbottomRight = (-bgPosY + containerSizeY) / bgSizeY;
     console.log('percentYbottomRight', percentYbottomRight);
 
-    var pxYtopLeft = percentYtopLeft * $("#mini-view").height()
-    $("#mini-border").css("top",pxYtopLeft + "px");
+    var pxYtopLeft = percentYtopLeft * $("#mini-view-container").height()
+    $("#mini-border").css("top", pxYtopLeft + "px");
 
-    var pxXtopLeft = percentXtopLeft * $("#mini-view").width()
-    $("#mini-border").css("left",pxXtopLeft + "px");
+    var pxXtopLeft = percentXtopLeft * $("#mini-view-container").width()
+    $("#mini-border").css("left", pxXtopLeft + "px");
 
 
 }
 
-function setKeysForZoomListener() { // Set a keypress listener on the body for zoom and scroll
-    $("body").on("keypress", function (event) {
-        console.log("event.which " + event.keyCode);
-        //press i, zoom in
-        switch (event.which) {
-            case 61:
-                var old_bgSizeX = bgSizeX;
-                var old_bgSizeY = bgSizeY;
-                bgSizeX = bgSizeX * 1.05;
-                bgSizeY = bgSizeY * 1.05;
+function makeDraggable() {
+    $("#overlay-center").on("mousedown", function (event) {
+        isMouseDown = true;
+        console.log('mouseDown', isMouseDown);
+        oldX = event.pageX;
+        oldY = event.pageY;
+    });
+    $("#overlay-center").on("mouseup", function () {
+        isMouseDown = false;
+        console.log('mouseDown', isMouseDown);
+        // $("#overlay-center").off("mousedown");
+        // $(this).off("mouseup");
+        console.log($("#micro-container").css("background-position-x"));
+    
+    });
 
-                //Will putting this all in a div make this easier.
-                var old_containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / old_bgSizeX;
-                var old_containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / old_bgSizeY;
-
-                var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * bgSizeX;
-                var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * bgSizeX) + bgPosX;
-                var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerSizeX / 2);
-                bgPosX -= offsetX;
-
-                var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * bgSizeY;
-                var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * bgSizeY) + bgPosY;
-                var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerSizeY / 2);
-                bgPosY -= offsetY;
-
-                break;
-            case 45: // Pressed k, zoomed out
-                var old_bgSizeX = bgSizeX;
-                var old_bgSizeY = bgSizeY;
-
-                bgSizeX = bgSizeX * 0.95;
-                bgSizeY = bgSizeY * 0.95;
-                var old_containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / old_bgSizeX;
-                var old_containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / old_bgSizeY;
-
-                var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * bgSizeX;
-                var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * bgSizeX) + bgPosX;
-                var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerSizeX / 2);
-                bgPosX -= offsetX;
-
-                var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * bgSizeY;
-                var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * bgSizeY) + bgPosY;
-                var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerSizeY / 2);
-                bgPosY -= offsetY;
-                break;
-            case 100: // d
-                bgPosX -= 20;
-                break;
-            case 97: //
-                bgPosX += 20;
-                break;
-            case 119: // w
-                bgPosY += 20;
-                break;
-            case 115: //s
-                bgPosY -= 20;
-                break;
-            default:
-            // code block
-        }
-        updateUiBgSize();
-        updateUiBgPos();
-
-
-        var containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / bgSizeX;
-        var containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / bgSizeY;
-        console.log(containerCenterX_relToImgCorner_percent);
-        console.log(containerCenterY_relToImgCorner_percent);
-
+    $("#overlay-center").on("mousemove", function (event) {
+        if (isMouseDown) {
+            var differenceX = event.pageX - oldX;
+            console.log('differenceX', differenceX);
+            var differenceY = event.pageY - oldY;
+            // $("#micro-container").css("background-position-x", "+=" + differenceX*.1 + "px");
+            // //console.log("background-position-x" + $("#micro-container").css("background-position-x"));
+            // $("#micro-container").css("background-position-y", "+=" + differenceY*.1 + "px");
+            bgPosX = bgPosX + differenceX;
+            bgPosY = bgPosY + differenceY;
+            oldX = event.pageX;
+            oldY = event.pageY;
+            updateUiBgPos();
+            console.log($("#micro-container").css("background-position-x"));
+        };
 
     });
 }
 
-function setHoverListener() {
-    $("#micro-container").hover( // On hover 
-        function () {
-            isHovering = true;  // set isHovering to true
-            console.log('isHovering', isHovering)
-            $(this).css("border", "2px solid #cccccc");
-        },
-        function (event) {
-            isHovering = false;
-            console.log('isHovering', isHovering);
-            $(this).css("border", "2px solid #000000");
+    function setKeysForZoomListener() { // Set a keypress listener on the body for zoom and scroll
+        $("body").on("keypress", function (event) {
+            console.log("event.which " + event.keyCode);
+            //press i, zoom in
+            switch (event.which) {
+                case 61:
+                    var old_bgSizeX = bgSizeX;
+                    var old_bgSizeY = bgSizeY;
+                    bgSizeX = bgSizeX * 1.05;
+                    bgSizeY = bgSizeY * 1.05;
 
-        }
-    );
-}
+                    //Will putting this all in a div make this easier.
+                    var old_containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / old_bgSizeX;
+                    var old_containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / old_bgSizeY;
+
+                    var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * bgSizeX;
+                    var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * bgSizeX) + bgPosX;
+                    var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerSizeX / 2);
+                    bgPosX -= offsetX;
+
+                    var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * bgSizeY;
+                    var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * bgSizeY) + bgPosY;
+                    var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerSizeY / 2);
+                    bgPosY -= offsetY;
+
+                    break;
+                case 45: // Pressed k, zoomed out
+                    var old_bgSizeX = bgSizeX;
+                    var old_bgSizeY = bgSizeY;
+
+                    bgSizeX = bgSizeX * 0.95;
+                    bgSizeY = bgSizeY * 0.95;
+                    var old_containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / old_bgSizeX;
+                    var old_containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / old_bgSizeY;
+
+                    var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * bgSizeX;
+                    var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * bgSizeX) + bgPosX;
+                    var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (containerSizeX / 2);
+                    bgPosX -= offsetX;
+
+                    var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * bgSizeY;
+                    var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * bgSizeY) + bgPosY;
+                    var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (containerSizeY / 2);
+                    bgPosY -= offsetY;
+                    break;
+                case 100: // d
+                    bgPosX -= 20;
+                    break;
+                case 97: //
+                    bgPosX += 20;
+                    break;
+                case 119: // w
+                    bgPosY += 20;
+                    break;
+                case 115: //s
+                    bgPosY -= 20;
+                    break;
+                default:
+                // code block
+            }
+            updateUiBgSize();
+            updateUiBgPos();
+
+
+            var containerCenterX_relToImgCorner_percent = ((containerSizeX / 2) - bgPosX) / bgSizeX;
+            var containerCenterY_relToImgCorner_percent = ((containerSizeY / 2) - bgPosY) / bgSizeY;
+            console.log(containerCenterX_relToImgCorner_percent);
+            console.log(containerCenterY_relToImgCorner_percent);
+
+
+        });
+    }
+
+    function setHoverListener() {
+        $("#micro-container").hover( // On hover 
+            function () {
+                isHovering = true;  // set isHovering to true
+                console.log('isHovering', isHovering)
+                $(this).css("border", "2px solid #cccccc");
+            },
+            function (event) {
+                isHovering = false;
+                console.log('isHovering', isHovering);
+                $(this).css("border", "2px solid #000000");
+
+            }
+        );
+    }
 
 //Todos------------------
 // Make Escape Key reset image
