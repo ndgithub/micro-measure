@@ -27,8 +27,6 @@ body {
     height: 5%;
     background: #000000;
     opacity: 0.8;
-
-    
 }
 
 #overlay-middle-row {
@@ -140,8 +138,7 @@ height:10px;
     z-index: 1;
     top: 0;
     right: 0;
-    background: #000000;
-    opacity: 0.8;
+    background:rgba(0, 0, 0, 0.8);
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
@@ -160,7 +157,7 @@ height:10px;
     color: #f1f1f1;
   }
   
-  .sidenav .closebtn {
+  .sidenav .open-close-sidebar {
     position: absolute;
     top: 0;
     right: 25px;
