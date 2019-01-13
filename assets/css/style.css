@@ -1,14 +1,15 @@
 body {
     width: 100vw;
     height: 100vh;
-    background:#999999;
+    background: gray;
     overflow: hidden;
+    
 }
 
 #micro-container {
     border: 1px solid #000000;
     text-align: center;
-    width: 100%;
+    width: 80%;
     height: 100%;
     background: url('https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png');
     background: url('../images/leaf.jpg');
@@ -16,36 +17,37 @@ body {
     float: left;
     overflow: auto;
     transition: width  .5s;
+    padding-right:250px;
 }
 
 .overlay {}
 
 #overlay-top {
     width: 100%;
-    height: 10%;
+    height: 5%;
     background: #000000;
-    opacity: 0.7;
+    opacity: 0.8;
 
     
 }
 
 #overlay-middle-row {
-    height: 80%;
+    height: 90%;
     width: 100%;
     
 }
 
 #overlay-middle-left {
     height: 100%;
-    width: 6%;
+    width: 5%;
     float: left;
     background: #000000;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 #overlay-center {
     height: 98%;
-    width: 87%;
+    width: 90%;
     background: none;
     float: left;
     border: 4px solid white;
@@ -55,8 +57,8 @@ body {
 }
 
 #scale-bar {
-    width: 25%;
-    height: 5%;
+    /* width: 25%; */
+    height: 30px;
     right: 0;
     bottom:0;
     margin-right:20px;
@@ -64,21 +66,35 @@ body {
     position: absolute;
     background: white;
     color: black;
+    text-align: center;
+    padding:8px;
 }
+
+#scale-bar-text {
+}
+
+#scale-bar-inner-bar {
+    background:black;
+    height:50%;
+    width:100%;
+    margin-left: auto;
+    margin-right:auto;
+}
+
 
 #overlay-middle-right {
     height: 100%;
-    width: 6%;
+    width: 4%;
     float: left;
     background: #000000;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 #overlay-bottom {
-    height: 10%;
+    height: 5%;
     width: 100%;
     background: #000000;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 #mini-view-container {
@@ -92,7 +108,7 @@ body {
 }
 
 #mini-border {
-border: 2px solid red;
+border: 2px solid white;
 position: relative;
 top: 20px;
 left: 0px;
@@ -107,7 +123,9 @@ height:10px;
     display: none;
 }
 
-#set-scalebar-button {}
+#set-scalebar-button {
+    width: 100%;
+}
 
 #scalebar-info {}
 
@@ -117,12 +135,13 @@ height:10px;
  
 .sidenav {
     height: 100%;
-    width: 0;
+    width: 20%;
     position: fixed;
     z-index: 1;
     top: 0;
     right: 0;
-    background-color: #111;
+    background: #000000;
+    opacity: 0.8;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;

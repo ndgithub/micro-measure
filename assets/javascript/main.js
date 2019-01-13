@@ -1,7 +1,6 @@
 var cl = console.log;
 
 
-
 // Images for testing
 // beach-small.jpg 272 X 92
 // beach.jpg 5184 X 3456
@@ -15,8 +14,8 @@ var containerSizeY = $("#micro-container").height();
 
 ////// IMAGE STUFF ////////////////////////////////////////////////////////
 // Dimensions for original image
-var origSizeX = 2560;
-var origSizeY = 1920;
+var origSizeX = 5184;
+var origSizeY = 3456;
 
 // Dimensions of current image
 var bgSizeY;
@@ -37,7 +36,7 @@ var clickPointsContainer = [];
 var clickPointsImagePerc = [];
 
 // The length of the generated scalebar in screen px
-var generatedScaleBarLengthPx;
+var generatedScaleBarContainerLengthPx;
 
 //The length of the scalebar in the image (user input required)
 var imageScaleBarUnits = 100;
@@ -56,7 +55,7 @@ var oldX;
 var oldY;
 
 
-var isSidebarOpen = false;
+var isSidebarOpen = true;
 
 
 setInitBgImageSize(); // Determine what size should be and assign to variables
@@ -82,13 +81,13 @@ function logStuff() {
             document.getElementById("mySidenav").style.width = "0%";
             document.getElementById("micro-container").style.width = "100%";
             isSidebarOpen = false;
-            updateUiBgSize();
+            
             // TODO: readjust position of img
         } else {
             document.getElementById("mySidenav").style.width = "20%";
             document.getElementById("micro-container").style.width = "80%";
             isSidebarOpen = true;
-            updateUiBgSize();
+            //updateUiBgSize();
 
             // TODO: readjust position of img
 
@@ -154,7 +153,10 @@ function setInitBgPos() {
 
 function updateUiBgSize() {
     $("#micro-container").css("background-size", Math.floor(bgSizeX) + "px " + Math.floor(bgSizeY) + "px");
-    updateUiScaleBar();
+    if (isScalebarSet) {
+        updateUiScaleBar();
+    }
+    
 }
 
 function updateUiBgPos() {
@@ -177,6 +179,7 @@ function updateUiClickPoint() {
     for (var i = 0; i < 2; i++) {
         $("#scalebar-info").append("clickPointsContainer[" + i + "]: ", clickPointsContainer[i], "<br>");
     };
+    
 }
 
 
@@ -190,18 +193,22 @@ function onScalebarSet() {
     scaleImageRatio = Math.abs(clickPointsImagePerc[0] - clickPointsImagePerc[1])
     $("#scalebar-info").append("scaleImageRatio:", scaleImageRatio);
     updateUiScaleBar();
+    
 
 }
 
 function updateUiScaleBar() {
-    generatedScaleBarLengthPx = $("#scale-bar").width();
-    console.log('generatedScaleBarLengthPx', generatedScaleBarLengthPx);
-    var generatedScaleBarPercentofBgImage = generatedScaleBarLengthPx / bgSizeX;
-    var generatedScaleBarLengthUnits = (generatedScaleBarPercentofBgImage / scaleImageRatio) * imageScaleBarUnits;
-    console.log('imageScaleBarUnits', imageScaleBarUnits);
-    console.log('scaleImageRatio', scaleImageRatio);
-    console.log('generatedScaleBarLengthUnits', generatedScaleBarLengthUnits);
-    $("#scale-bar").html(Math.round(generatedScaleBarLengthUnits));
+    var overlayCenterWidth = $("#overlay-center").width();
+    //console.log('overlayCenterWidth', overlayCenterWidth);
+    $("#scale-bar").css("width",overlayCenterWidth * .3 + "px");
+    var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
+    console.log('scaleBarInnerLengthPx', scaleBarInnerLengthPx);
+    //console.log($("#scale-bar").css("width") + "asdf");
+    var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / bgSizeX;
+    var generatedScaleBarContainerLengthUnits = (scaleBarInnerPercentofBgImage / scaleImageRatio) * imageScaleBarUnits;
+    $("#scale-bar-text").html(Math.round(generatedScaleBarContainerLengthUnits));
+    console.log('generatedScaleBarContainerLengthUnits + aaasdf', generatedScaleBarContainerLengthUnits);
+
 
 }
 
@@ -260,7 +267,7 @@ function makeDraggable() {
     });
 
     $("#overlay-center").on("mousemove", function (event) {
-        console.log(event);
+        
         if (isMouseDown) {
             // TODO:  use event.originalevent.movementX;
             var differenceX = event.pageX - oldX;
@@ -380,3 +387,5 @@ function setHoverListener() {
 
 // for miniview:
  // bg postion x diviv
+
+ // If you click set scalebar, dragging the image shouldn't count as a click.
