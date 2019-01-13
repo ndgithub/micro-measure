@@ -18,26 +18,40 @@ var isMouseDown;
 var oldX;
 var oldY;
 
-// Objectification ////////////////////////////
 
 var container = {
     //Dimensions for #micro-container
-    getContainerSizeX: function () {
+    getSizeX: function () {
         return $("#micro-container").width();
     },
-    getContainerSizeY: function () {
+    getSizeY: function () {
         return $("#micro-container").height();
     },
 };
-
+//micrograph image object
 var mg = {
     // Dimensions for original image
-    origSizeX: 1000,
-    origSizeY: 1000,
+    origSizeX: 2560,
+    origSizeY: 1920,
 
     // Dimensions of current image
     currSizeX: "",
     currSizeY: "",
+    setInitSize: function (containerSizeX, containerSizeY) {
+        var ratioY = this.origSizeY / containerSizeY;
+        this.currSizeY = this.origSizeY / ratioY; //460 
+        this.currSizeX = this.origSizeX / ratioY; //1360
+
+        var newRatioX = this.currSizeX / containerSizeX; // 1.1
+        if (newRatioX >= 1) {
+            this.currSizeX = containerSizeX; //1280
+            this.currSizeY = this.currSizeY / newRatioX; // 469 / 1.1
+        }
+    },
+    setInitPos: function (containerSizeX, containerSizeY) {
+        mg.currPosX = (containerSizeX - this.currSizeX) / 2;
+        mg.currPosY = (containerSizeY - this.currSizeY) / 2;
+    },
 
     // Image Position (top left corner relative to #micro-container )
     currPosX: "",
@@ -48,7 +62,7 @@ var mg = {
 var scaleBar = {
     // Boolean for if the scalebar has been set (to turn off click listener)
     isSet: false,
-    scaleImageRatio : "", //The length of the scalebar in the image (user input required)
+    scaleImageRatio: "", //The length of the scalebar in the image (user input required)
     // Array for scalebar points relative to #micro-container
     clickPointsContainer: "",
     //Array for scalebar points relative to image
@@ -59,19 +73,20 @@ var scaleBar = {
 };
 
 var sidebar = {
-    isSideBarOpen : true,
+    isSideBarOpen: true,
 };
 
 var miniview = {
 
 };
 
+var uiUpdater = {
+    
+}
 
+mg.setInitSize(container.getSizeX(), container.getSizeY());
+mg.setInitPos(container.getSizeX(),container.getSizeY()); 
 
-
-
-setInitBgImageSize(); // Determine what size should be and assign to variables
-setInitBgPos(); // Determine what position should be and assign to variables
 updateUiBgSize(); // updates image size in UI
 updateUiBgPos();  // updates image pos in UI
 
@@ -107,25 +122,6 @@ function logStuff() {
 
 }
 
-function setInitBgImageSize() {
-    var ratioY = mg.origSizeY / container.getContainerSizeY(); 
-    console.log('*** mg.origSizeY', mg.origSizeY);
-    console.log('*** ratioY', ratioY);
-    mg.currSizeY = mg.origSizeY / ratioY; //460 
-    mg.currSizeX = mg.origSizeX / ratioY; //1360
-
-    var newRatioX = mg.currSizeX / container.getContainerSizeX(); // 1.1
-    if (newRatioX >= 1) {
-        mg.currSizeX = container.getContainerSizeX(); //1280
-        mg.currSizeY = mg.currSizeY / newRatioX; // 469 / 1.1
-    }
-}
-
-function setInitBgPos() {
-    mg.currPosX = (container.getContainerSizeX() - mg.currSizeX) / 2;
-    mg.currPosY = (container.getContainerSizeY() - mg.currSizeY) / 2;
-}
-
 function updateUiBgSize() {
     $("#micro-container").css("background-size", Math.floor(mg.currSizeX) + "px " + Math.floor(mg.currSizeY) + "px");
     if (scaleBar.isSet) {
@@ -158,17 +154,17 @@ function wheeling() {
 
 
         //Will putting this all in a div make this easier.
-        var old_containerCenterX_relToImgCorner_percent = ((container.getContainerSizeX() / 2) - mg.currPosX) / old_currSizeX;
-        var old_containerCenterY_relToImgCorner_percent = ((container.getContainerSizeY() / 2) - mg.currPosY) / old_currSizeY;
+        var old_containerCenterX_relToImgCorner_percent = ((container.getSizeX() / 2) - mg.currPosX) / old_currSizeX;
+        var old_containerCenterY_relToImgCorner_percent = ((container.getSizeY() / 2) - mg.currPosY) / old_currSizeY;
 
         var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * mg.currSizeX;
         var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * mg.currSizeX) + mg.currPosX;
-        var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (container.getContainerSizeX() / 2);
+        var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (container.getSizeX() / 2);
         mg.currPosX -= offsetX;
 
         var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * mg.currSizeY;
         var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * mg.currSizeY) + mg.currPosY;
-        var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (container.getContainerSizeY() / 2);
+        var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (container.getSizeY() / 2);
         mg.currPosY -= offsetY;
 
         updateUiBgSize();
@@ -177,8 +173,8 @@ function wheeling() {
 }
 
 function getContainerSize() { // Gets the container size from the DOM and sets to variables 
-    container.getContainerSizeX() = $("#micro-container").width();
-    container.getContainerSizeY() = $("#micro-container").height();
+    container.getSizeX() = $("#micro-container").width();
+    container.getSizeY() = $("#micro-container").height();
 }
 
 
@@ -220,15 +216,11 @@ function onScalebarSet() {
 
 function updateUiScaleBar() {
     var overlayCenterWidth = $("#overlay-center").width();
-    //console.log('overlayCenterWidth', overlayCenterWidth);
     $("#scale-bar").css("width", overlayCenterWidth * .3 + "px");
     var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
-    console.log('scaleBarInnerLengthPx', scaleBarInnerLengthPx);
-    //console.log($("#scale-bar").css("width") + "asdf");
     var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / mg.currSizeX;
-    var generatedScaleBarContainerLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.scaleImageRatio) * scaleBar.imageScaleBarUnits;
-    $("#scale-bar-text").html(Math.round(generatedScaleBarContainerLengthUnits));
-    console.log('generatedScaleBarContainerLengthUnits + aaasdf', generatedScaleBarContainerLengthUnits);
+    var scaleBarLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.scaleImageRatio) * scaleBar.imageScaleBarUnits;
+    $("#scale-bar-text").html(Math.round(scaleBarLengthUnits));
 
 
 }
@@ -257,9 +249,9 @@ function getMiniDims() {
     var percentYtopLeft = -mg.currPosY / mg.currSizeY;
     console.log('percentYtopLeft', percentYtopLeft);
 
-    var percentXbottomRight = (-mg.currPosX + container.getContainerSizeX()) / mg.currSizeX;
+    var percentXbottomRight = (-mg.currPosX + container.getSizeX()) / mg.currSizeX;
     console.log('percentXbottomRight', percentXbottomRight);
-    var percentYbottomRight = (-mg.currPosY + container.getContainerSizeY()) / mg.currSizeY;
+    var percentYbottomRight = (-mg.currPosY + container.getSizeY()) / mg.currSizeY;
     console.log('percentYbottomRight', percentYbottomRight);
 
     var pxYtopLeft = percentYtopLeft * $("#mini-view-container").height()
@@ -320,17 +312,17 @@ function setKeysForZoomListener() { // Set a keypress listener on the body for z
                 mg.currSizeY = mg.currSizeY * 1.05;
 
                 //Will putting this all in a div make this easier.
-                var old_containerCenterX_relToImgCorner_percent = ((container.getContainerSizeX() / 2) - mg.currPosX) / old_currSizeX;
-                var old_containerCenterY_relToImgCorner_percent = ((container.getContainerSizeY() / 2) - mg.currPosY) / old_currSizeY;
+                var old_containerCenterX_relToImgCorner_percent = ((container.getSizeX() / 2) - mg.currPosX) / old_currSizeX;
+                var old_containerCenterY_relToImgCorner_percent = ((container.getSizeY() / 2) - mg.currPosY) / old_currSizeY;
 
                 var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * mg.currSizeX;
                 var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * mg.currSizeX) + mg.currPosX;
-                var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (container.getContainerSizeX() / 2);
+                var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (container.getSizeX() / 2);
                 mg.currPosX -= offsetX;
 
                 var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * mg.currSizeY;
                 var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * mg.currSizeY) + mg.currPosY;
-                var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (container.getContainerSizeY() / 2);
+                var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (container.getSizeY() / 2);
                 mg.currPosY -= offsetY;
 
                 break;
@@ -340,17 +332,17 @@ function setKeysForZoomListener() { // Set a keypress listener on the body for z
 
                 mg.currSizeX = mg.currSizeX * 0.95;
                 mg.currSizeY = mg.currSizeY * 0.95;
-                var old_containerCenterX_relToImgCorner_percent = ((container.getContainerSizeX() / 2) - mg.currPosX) / old_currSizeX;
-                var old_containerCenterY_relToImgCorner_percent = ((container.getContainerSizeY() / 2) - mg.currPosY) / old_currSizeY;
+                var old_containerCenterX_relToImgCorner_percent = ((container.getSizeX() / 2) - mg.currPosX) / old_currSizeX;
+                var old_containerCenterY_relToImgCorner_percent = ((container.getSizeY() / 2) - mg.currPosY) / old_currSizeY;
 
                 var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * mg.currSizeX;
                 var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * mg.currSizeX) + mg.currPosX;
-                var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (container.getContainerSizeX() / 2);
+                var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (container.getSizeX() / 2);
                 mg.currPosX -= offsetX;
 
                 var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * mg.currSizeY;
                 var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * mg.currSizeY) + mg.currPosY;
-                var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (container.getContainerSizeY() / 2);
+                var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (container.getSizeY() / 2);
                 mg.currPosY -= offsetY;
                 break;
             case 100: // d
@@ -372,8 +364,8 @@ function setKeysForZoomListener() { // Set a keypress listener on the body for z
         updateUiBgPos();
 
 
-        var containerCenterX_relToImgCorner_percent = ((container.getContainerSizeX() / 2) - mg.currPosX) / mg.currSizeX;
-        var containerCenterY_relToImgCorner_percent = ((container.getContainerSizeY() / 2) - mg.currPosY) / mg.currSizeY;
+        var containerCenterX_relToImgCorner_percent = ((container.getSizeX() / 2) - mg.currPosX) / mg.currSizeX;
+        var containerCenterY_relToImgCorner_percent = ((container.getSizeY() / 2) - mg.currPosY) / mg.currSizeY;
         console.log(containerCenterX_relToImgCorner_percent);
         console.log(containerCenterY_relToImgCorner_percent);
 
