@@ -31,11 +31,10 @@ var mg = {
     // Dimensions for original image
     origSizeX: 2560,
     origSizeY: 1920,
-
     // Dimensions of current image
     sizeX: "",
     sizeY: "",
-
+    // Position of current image
     posX: "",
     posY: "",
 
@@ -50,9 +49,11 @@ var mg = {
             this.sizeY = this.sizeY / newRatioX; // 469 / 1.1
         }
     },
+    //sets initial position relative to its container
     setInitPos: function (containerSizeX, containerSizeY) {
-        mg.posX = (containerSizeX - this.sizeX) / 2;
-        mg.posY = (containerSizeY - this.sizeY) / 2;
+        mg.posX = ((containerSizeX - this.sizeX) / 2) + $("#overlay-middle-left").width() ;
+        mg.posY = ((containerSizeY - this.sizeY) / 2) + $("#overlay-top").height();
+        console.log("caca" + $('#overlay-middle-left').width());
     },
 
     // Image Position (top left corner relative to #micro-container )
@@ -111,6 +112,12 @@ var ui = {
     getContainerSizeY: function () {
         return $("#micro-container").height();
     },
+    getCenterSizeX: function () {
+        return $("#overlay-center").width();
+    },
+    getCenterSizeY: function () {
+        return $("#overlay-center").height();
+    },
     setImageSize: function (sizeX, sizeY) {
         $("#micro-container").css("background-size", Math.floor(sizeX) + "px " + Math.floor(sizeY) + "px");
         if (scaleBar.isSet) {
@@ -121,7 +128,6 @@ var ui = {
         $("#micro-container").css("background-position", Math.floor(posX) + "px " + Math.floor(posY) + "px");
         this.setMiniSize();
         this.setMiniPos();
-
     },
     setMiniSize: function () {
         $("#mini-border").width(mv.sizeX);
@@ -135,8 +141,8 @@ var ui = {
 
 }
 
-mg.setInitSize(ui.getContainerSizeX(), ui.getContainerSizeY());
-mg.setInitPos(ui.getContainerSizeX(), ui.getContainerSizeY());
+mg.setInitSize(ui.getCenterSizeX(), ui.getCenterSizeY());
+mg.setInitPos(ui.getCenterSizeX(), ui.getCenterSizeY());
 
 ui.setImageSize(mg.sizeX, mg.sizeY); // updates image size in UI
 ui.setImagePos(mg.posX, mg.posY);
@@ -194,11 +200,11 @@ function wheeling() {
         var old_sizeX = mg.sizeX;
         var old_sizeY = mg.sizeY;
         if (event.originalEvent.wheelDelta > 0) {
-            mg.sizeX *= 1.01;
-            mg.sizeY *= 1.01;
+            mg.sizeX *= 1.02;
+            mg.sizeY *= 1.02;
         } else {
-            mg.sizeX *= 0.99;
-            mg.sizeY *= 0.99;
+            mg.sizeX *= 0.98;
+            mg.sizeY *= 0.98;
         }
 
 
