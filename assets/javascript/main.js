@@ -1,4 +1,3 @@
-var cl = console.log;
 
 // Images for testing
 // beach-small.jpg 272 X 92
@@ -51,7 +50,7 @@ var mg = {
     },
     //sets initial position relative to its container
     setInitPos: function (containerSizeX, containerSizeY) {
-        mg.posX = ((containerSizeX - this.sizeX) / 2) + $("#overlay-middle-left").width() ;
+        mg.posX = ((containerSizeX - this.sizeX) / 2) + $("#overlay-middle-left").width();
         mg.posY = ((containerSizeY - this.sizeY) / 2) + $("#overlay-top").height();
         console.log("caca" + $('#overlay-middle-left').width());
     },
@@ -146,12 +145,6 @@ mg.setInitPos(ui.getCenterSizeX(), ui.getCenterSizeY());
 
 ui.setImageSize(mg.sizeX, mg.sizeY); // updates image size in UI
 ui.setImagePos(mg.posX, mg.posY);
-
-mv.setMiniSize();
-ui.setMiniSize();
-
-mv.setMiniPos();
-ui.setMiniPos();
 
 
 
