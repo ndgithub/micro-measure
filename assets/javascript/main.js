@@ -50,9 +50,8 @@ var mg = {
     },
     //sets initial position relative to its container
     setInitPos: function (containerSizeX, containerSizeY) {
-        mg.posX = ((containerSizeX - this.sizeX) / 2) + $("#overlay-middle-left").width();
-        mg.posY = ((containerSizeY - this.sizeY) / 2) + $("#overlay-top").height();
-        console.log("caca" + $('#overlay-middle-left').width());
+        mg.posX = ((containerSizeX - this.sizeX) / 2);// + $("#overlay-middle-left").width();
+        mg.posY = ((containerSizeY - this.sizeY) / 2);//+ $("#overlay-top").height();
     },
 
     // Image Position (top left corner relative to #micro-container )
@@ -77,32 +76,7 @@ var sidebar = {
     isSidebarOpen: true,
 };
 
-var mv = {
-    sizeX: null,
-    sizeY: null,
-    posX: null,
-    posY: null,
-    setMiniSize: function () {
-        var ratioX = $("#overlay-center").width() / mg.sizeX;
-        console.log('ratioX____', ratioX);
-        var ratioY = $("#overlay-center").height() / mg.sizeY;
-        // minisize 
-        this.sizeX = ratioX * $("#mini-view-container").width();
-        this.sizeY = ratioY * $("#mini-view-container").height();
-        console.log('this.sizeY', this.sizeY);
 
-    },
-    setMiniPos: function () {
-        var ratioX = (-mg.posX + $("#overlay-center").position().left) / mg.sizeX;
-        console.log('posX', mg.posY);
-        var ratioY = (-mg.posY + $("#overlay-middle-row").position().top) / mg.sizeY;
-
-        this.posX = ratioX * $("#mini-view-container").width();
-        this.posY = ratioY * $("#mini-view-container").height();
-
-        console.log("asdfadfsafd " + $("#overlay-middle-row").position().top);
-    }
-}
 
 var ui = {
     getContainerSizeX: function () {
@@ -111,12 +85,7 @@ var ui = {
     getContainerSizeY: function () {
         return $("#micro-container").height();
     },
-    getCenterSizeX: function () {
-        return $("#overlay-center").width();
-    },
-    getCenterSizeY: function () {
-        return $("#overlay-center").height();
-    },
+
     setImageSize: function (sizeX, sizeY) {
         $("#micro-container").css("background-size", Math.floor(sizeX) + "px " + Math.floor(sizeY) + "px");
         if (scaleBar.isSet) {
@@ -125,24 +94,16 @@ var ui = {
     },
     setImagePos: function (posX, posY) {
         $("#micro-container").css("background-position", Math.floor(posX) + "px " + Math.floor(posY) + "px");
-        this.setMiniSize();
-        this.setMiniPos();
-    },
-    setMiniSize: function () {
-        $("#mini-border").width(mv.sizeX);
-        $("#mini-border").height(mv.sizeY);
 
     },
-    setMiniPos: function () {
-        $("#mini-border").css("left", mv.posX + "px");
-        $("#mini-border").css("top", mv.posY + "px");
-    }
 
 }
-
-mg.setInitSize(ui.getCenterSizeX(), ui.getCenterSizeY());
-mg.setInitPos(ui.getCenterSizeX(), ui.getCenterSizeY());
-
+console.log('x ' + mg.sizeX);
+console.log('y ' + mg.sizeY);
+mg.setInitSize(ui.getContainerSizeX(), ui.getContainerSizeY());
+mg.setInitPos(ui.getContainerSizeX(), ui.getContainerSizeY());
+console.log("x" + mg.sizeX);
+console.log("y" + mg.sizeY);
 ui.setImageSize(mg.sizeX, mg.sizeY); // updates image size in UI
 ui.setImagePos(mg.posX, mg.posY);
 
@@ -150,41 +111,14 @@ ui.setImagePos(mg.posX, mg.posY);
 
 
 
-setHoverListener(); // sets isHovering to true if hovering o #micro-contiainer
-setKeysForZoomListener(); // Set a keypress listener on the body for zoom and scroll
-setClickforScalebarListener();//Set a click listener on #micro-container to set scalebar ration points. Turns itself off after two clicks.
-makeDraggable();
-logStuff();
-wheeling();
+// setHoverListener(); // sets isHovering to true if hovering o #micro-contiainer
+// setKeysForZoomListener(); // Set a keypress listener on the body for zoom and scroll
+// setClickforScalebarListener();//Set a click listener on #micro-container to set scalebar ration points. Turns itself off after two clicks.
+// makeDraggable();
+// logStuff();
+// wheeling();
 
 
-//------------------------------------------------------//
-function logStuff() {
-    cl(" hello" + $("#overlay-center").css("top"));
-
-    $(".open-close-sidebar").on("click", function () {
-        if (sidebar.isSidebarOpen) {
-            document.getElementById("mySidenav").style.width = "0%";
-            document.getElementById("micro-container").style.width = "100%";
-            sidebar.isSidebarOpen = false;
-            // TODO: readjust position of img...maybe
-        } else {
-            document.getElementById("mySidenav").style.width = "20%";
-            document.getElementById("micro-container").style.width = "80%";
-            sidebar.isSidebarOpen = true;
-            //ui.setImageSize(mg.sizeX,mg.sizeY);
-
-            // TODO: readjust position of img...maybe
-
-        }
-    });
-
-}
-
-function ministuff() {
-
-
-}
 
 function wheeling() {
     $("#micro-container").on("mousewheel", function (event) {
@@ -218,11 +152,8 @@ function wheeling() {
         ui.setImageSize(mg.sizeX, mg.sizeY);
         ui.setImagePos(mg.posX, mg.posY);
 
-        mv.setMiniSize();
-        mv.setMiniPos();
 
-        ui.setMiniSize();
-        ui.setMiniPos();
+
 
     });
 }
@@ -257,12 +188,12 @@ function onScalebarSet() {
 }
 
 function updateUiScaleBar() {
-    var overlayCenterWidth = $("#overlay-center").width();
-    $("#scale-bar").css("width", overlayCenterWidth * .3 + "px");
-    var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
-    var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / mg.sizeX;
-    var scaleBarLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.scaleImageRatio) * scaleBar.imageScaleBarUnits;
-    $("#scale-bar-text").html(Math.round(scaleBarLengthUnits));
+    // var overlayCenterWidth = $("#overlay-center").width();
+    // $("#scale-bar").css("width", overlayCenterWidth * .3 + "px");
+    // var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
+    // var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / mg.sizeX;
+    // var scaleBarLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.scaleImageRatio) * scaleBar.imageScaleBarUnits;
+    // $("#scale-bar-text").html(Math.round(scaleBarLengthUnits));
 }
 
 function setClickforScalebarListener() {
@@ -312,13 +243,6 @@ function makeDraggable() {
             oldY = event.pageY;
 
             ui.setImagePos(mg.posX, mg.posY);
-
-            mv.setMiniSize();
-            mv.setMiniPos();
-
-            ui.setMiniSize();
-            ui.setMiniPos();
-
         };
 
     });
