@@ -177,21 +177,37 @@ function onScalebarSet() {
     var input = prompt("How long is that");
     scaleBar.imageScaleBarUnits = input;
     scaleBar.isSet = true;
-    console.log('scaleBar.isSet', scaleBar.isSet);
     var length = Math.abs(scaleBar.clickPoints[0] - scaleBar.clickPoints[1]);
-    console.log('length', length);
     $("#scalebar-info").append(length, "<br>");
     scaleBar.scaleImageRatio = Math.abs(scaleBar.clickPointsImagePercent[0] - scaleBar.clickPointsImagePercent[1])
     $("#scalebar-info").append("scaleBar.scaleImageRatio:", scaleBar.scaleImageRatio);
     updateUiScaleBar();
+
 }
 
 function updateUiScaleBar() {
+    var rawInput = scaleBar.imageScaleBarUnits;
+    var containerSizeX = container.getSizeX();
+    var percentOfImageOfInputPoints = scaleBar.scaleImageRatio;
+    var containerSizeUnits = rawInput / percentOfImageOfInputPoints;
+    // How many Units is th CONTAINER?????????????
 
+
+    console.log('pt1' + scaleBar.clickPointsImagePercent[0]);
+    console.log('pt2' + scaleBar.clickPointsImagePercent[1]);
+    console.log('ratio', ratio);
+
+
+    //  SETS the size of the scalebar container to 30% of the container;
     $("#scale-bar").css("width", $("#micro-container").width() * .3 + "px");
+
+    // GETS the width of the black scalebar in px
     var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
+    // Gets the the length of the black scalebar as a %
     var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / mg.sizeX;
+    // Gets the number of units to display for that lenght of scalebar.
     var scaleBarLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.scaleImageRatio) * scaleBar.imageScaleBarUnits;
+    // update html number
     $("#scale-bar-text").html(Math.round(scaleBarLengthUnits));
 }
 
