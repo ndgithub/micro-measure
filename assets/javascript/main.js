@@ -64,7 +64,7 @@ var scaleBar = {
     isSet: false,
     scaleImageRatio: "", //The length of the scalebar in the image (user input required)
     // Array for scalebar points relative to #micro-container
-    clickPointsContainer: "",
+    clickPoints: "",
     //Array for scalebar points relative to image
     clickPointsImagePercent: "",
     // The length of the generated scalebar in screen px
@@ -111,17 +111,18 @@ ui.setImagePos(mg.posX, mg.posY);
 
 
 
-// setHoverListener(); // sets isHovering to true if hovering o #micro-contiainer
-// setKeysForZoomListener(); // Set a keypress listener on the body for zoom and scroll
-// setClickforScalebarListener();//Set a click listener on #micro-container to set scalebar ration points. Turns itself off after two clicks.
-// makeDraggable();
-// logStuff();
-// wheeling();
+setHoverListener(); // sets isHovering to true if hovering o #micro-contiainer
+setKeysForZoomListener(); // Set a keypress listener on the body for zoom and scroll
+setClickforScalebarListener();//Set a click listener on #micro-container to set scalebar ration points. Turns itself off after two clicks.
+makeDraggable();
+
+wheeling();
 
 
 
 function wheeling() {
     $("#micro-container").on("mousewheel", function (event) {
+        event.preventDefault();
         console.log(event.originalEvent.wheelDelta);
         console.log("****");
         var old_sizeX = mg.sizeX;
@@ -133,8 +134,6 @@ function wheeling() {
             mg.sizeX *= 0.98;
             mg.sizeY *= 0.98;
         }
-
-
         //Will putting this all in a div make this easier.
         var old_containerCenterX_relToImgCorner_percent = ((container.getSizeX() / 2) - mg.posX) / old_sizeX;
         var old_containerCenterY_relToImgCorner_percent = ((container.getSizeY() / 2) - mg.posY) / old_sizeY;
@@ -161,16 +160,15 @@ function wheeling() {
 
 function resetClickPoints() {
     scaleBar.isSet = false;
-    cl('scaleBar.isSet', scaleBar.isSet);
-    scaleBar.clickPointsContainer = [];
+    scaleBar.clickPoints = [];
     scaleBar.clickPointsImagePercent = [];
-    $("#scalebar-info").html("");
+
 }
 
 function updateUiClickPoint() {
     $("#scalebar-info").html("");
     for (var i = 0; i < 2; i++) {
-        $("#scalebar-info").append("scaleBar.clickPointsContainer[" + i + "]: ", scaleBar.clickPointsContainer[i], "<br>");
+        $("#scalebar-info").append("scaleBar.clickPointsContainer[" + i + "]: ", scaleBar.clickPoints[i], "<br>");
     };
 
 }
@@ -180,7 +178,8 @@ function onScalebarSet() {
     scaleBar.imageScaleBarUnits = input;
     scaleBar.isSet = true;
     console.log('scaleBar.isSet', scaleBar.isSet);
-    var length = Math.abs(scaleBar.clickPointsContainer[0] - scaleBar.clickPointsContainer[1]);
+    var length = Math.abs(scaleBar.clickPoints[0] - scaleBar.clickPoints[1]);
+    console.log('length', length);
     $("#scalebar-info").append(length, "<br>");
     scaleBar.scaleImageRatio = Math.abs(scaleBar.clickPointsImagePercent[0] - scaleBar.clickPointsImagePercent[1])
     $("#scalebar-info").append("scaleBar.scaleImageRatio:", scaleBar.scaleImageRatio);
@@ -188,27 +187,38 @@ function onScalebarSet() {
 }
 
 function updateUiScaleBar() {
-    // var overlayCenterWidth = $("#overlay-center").width();
-    // $("#scale-bar").css("width", overlayCenterWidth * .3 + "px");
-    // var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
-    // var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / mg.sizeX;
-    // var scaleBarLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.scaleImageRatio) * scaleBar.imageScaleBarUnits;
-    // $("#scale-bar-text").html(Math.round(scaleBarLengthUnits));
+
+    $("#scale-bar").css("width", $("#micro-container").width() * .3 + "px");
+    var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
+    var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / mg.sizeX;
+    var scaleBarLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.scaleImageRatio) * scaleBar.imageScaleBarUnits;
+    $("#scale-bar-text").html(Math.round(scaleBarLengthUnits));
 }
 
 function setClickforScalebarListener() {
     $("#set-scalebar-button").on("click", function () {
         resetClickPoints();
-        $("#micro-container").on("click", function (event) { // 
-            scaleBar.clickPointsContainer.push(event.pageX);
-            var imageXpercent = ((event.pageX) - mg.posX) / mg.sizeX;
-            console.log('imageXpercent', imageXpercent);
-            scaleBar.clickPointsImagePercent.push(imageXpercent);
-            updateUiClickPoint();
-            if (scaleBar.clickPointsContainer.length === 2) {
-                onScalebarSet();
-                $(this).off("click");
+        var oldPos = [mg.posX, mg.posY]//Get current micro position
+        console.log('oldPos', oldPos);
+        $("#micro-container").on("click", function (event) { // click us on mouse release
+            console.log('hi');
+            var newPos = [mg.posX, mg.posY]
+            if (JSON.stringify(oldPos) == JSON.stringify(newPos)) {
+                console.log('hye');
+                //if it moved, don't do anything, and make to the new position 
+                scaleBar.clickPoints.push(event.pageX);
+                var imageXpercent = ((event.pageX) - mg.posX) / mg.sizeX;
+                scaleBar.clickPointsImagePercent.push(imageXpercent);
+                updateUiClickPoint();
+                if (scaleBar.clickPoints.length === 2) {
+                    onScalebarSet();
+                    $(this).off("click");
+                }
+            } else {
+                oldPos = newPos;
             }
+
+
         });
     });
 }
@@ -216,18 +226,18 @@ function setClickforScalebarListener() {
 
 
 function makeDraggable() {
-    $("#overlay-center").on("mousedown", function (event) {
+    $("#micro-container").on("mousedown", function (event) {
         isMouseDown = true;
         ('mouseDown', isMouseDown);
         oldX = event.pageX;
         oldY = event.pageY;
     });
-    $("#overlay-center").on("mouseup", function () {
+    $("#micro-container").on("mouseup", function () {
         isMouseDown = false;
 
     });
 
-    $("#overlay-center").on("mousemove", function (event) {
+    $("#micro-container").on("mousemove", function (event) {
 
         if (isMouseDown) {
             // TODO:  use event.originalevent.movementX;

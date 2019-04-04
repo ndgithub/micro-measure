@@ -2,65 +2,40 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!--Stylesheets-->
+  <!--Stylesheets-->
+  <link rel="stylesheet" type="text/css" media="screen" href="assets/css/reset.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/reset.css" />
-    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
-   
-
+  <link rel="stylesheet" type="text/css" media="screen"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 </head>
 
-
-
 <body>
-    <div id="micro-container">
-        <div id="overlay-top" class="overlay"></div>
-        <div id="overlay-middle-row" class="overlay">
-            <div id="overlay-middle-left" class="overlay"></div>
-            <div id="overlay-center" class="overlay">
-                <div id="scale-bar">
-                    <div id="scale-bar-text"></div>
-                    <div id="scale-bar-inner-bar"></div>
-                </div>
-            </div>
-            <div id="overlay-middle-right" class="overlay">
-                <div class="open-close-sidebar">asdasdff</div>
 
-            </div>
-        </div>
-        <div id="overlay-bottom" class="overlay"></div>
+  <div id="sidebar">
+    <button id="set-scalebar-button" class="btn btn-primary">Set Scalebar</button>
+    <div id="scalebar-info"></div>
+  </div>
+  <div id="micro-container">
+    <div id="scale-bar">
+      <div id="scale-bar-text"></div>
+      <div id="scale-bar-inner-bar"></div>
     </div>
-    
-
-    <div id="mySidenav" class="sidenav">
-        <a href="javascript:void(0)" class="open-close-sidebar">&times;</a>
-        
-            <div id="mini-view-container"><div id="mini-border"></div></div>
-            <button id="set-scalebar-button">Set Scalebar</button>
-            <div id="scalebar-info"></div>
-        
-      </div>
-      
+  </div>
 
 
 
-
-
-
-
-
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
-        crossorigin="anonymous"></script>
-    <script src="assets/javascript/main.js"></script>
-
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+    integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+  <script src="assets/javascript/main.js"></script>
 
 
 
