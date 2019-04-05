@@ -11,5 +11,3 @@
 1. user enters a size
 2. 
 
-
-updateUIScalebar() is where all the code goes.

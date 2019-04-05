@@ -35,13 +35,9 @@ body {
 }
 
 #scale-bar {
-    /* width: 25%; */
     height: 55px;
-    /* right: 0;
-    bottom: 0; */
     margin-right: 20px;
     margin-bottom: 20px;
-    /* position: absolute; */
     background: white;
     color: black;
     text-align: center;
@@ -53,10 +49,9 @@ body {
 #scale-bar-inner-bar {
     background: black;
     height: 50%;
-    width: 100%;
+    width: 0px;
     margin-left: auto;
     margin-right: auto;
-    /* padding: 8px; */
 }
 
 #set-scalebar-button {

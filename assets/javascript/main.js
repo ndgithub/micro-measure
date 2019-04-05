@@ -62,7 +62,7 @@ var mg = {
 var scaleBar = {
     // Boolean for if the scalebar has been set (to turn off click listener)
     isSet: false,
-    scaleImageRatio: "", //The length of the scalebar in the image (user input required)
+    givenScaleImgPerc: "", //The length of the scalebar in the image (user input required)
     // Array for scalebar points relative to #micro-container
     clickPoints: "",
     //Array for scalebar points relative to image
@@ -179,36 +179,64 @@ function onScalebarSet() {
     scaleBar.isSet = true;
     var length = Math.abs(scaleBar.clickPoints[0] - scaleBar.clickPoints[1]);
     $("#scalebar-info").append(length, "<br>");
-    scaleBar.scaleImageRatio = Math.abs(scaleBar.clickPointsImagePercent[0] - scaleBar.clickPointsImagePercent[1])
-    $("#scalebar-info").append("scaleBar.scaleImageRatio:", scaleBar.scaleImageRatio);
+    scaleBar.givenScaleImgPerc = Math.abs(scaleBar.clickPointsImagePercent[0] - scaleBar.clickPointsImagePercent[1])
+    $("#scalebar-info").append("scaleBar.scaleImageRatio:", scaleBar.givenScaleImgPerc);
     updateUiScaleBar();
 
 }
 
 function updateUiScaleBar() {
     var rawInput = scaleBar.imageScaleBarUnits;
-    var containerSizeX = container.getSizeX();
-    var percentOfImageOfInputPoints = scaleBar.scaleImageRatio;
-    var containerSizeUnits = rawInput / percentOfImageOfInputPoints;
-    // How many Units is th CONTAINER?????????????
+    var percentOfImageOfInputPoints = scaleBar.givenScaleImgPerc;
+
+    var imageContainerRatio = mg.sizeX / container.getSizeX(); // Changes on zoom
+    var imageSizeUnits = rawInput / percentOfImageOfInputPoints; //Never changes
+    var containerSizeXUnits = Math.floor(imageSizeUnits / imageContainerRatio);
+    var containerSizeXUnits_length = containerSizeXUnits.toString().length;
 
 
-    console.log('pt1' + scaleBar.clickPointsImagePercent[0]);
-    console.log('pt2' + scaleBar.clickPointsImagePercent[1]);
-    console.log('ratio', ratio);
+
+    // choose a round number in between the min and max;
+    var min = Math.floor(containerSizeXUnits * 0.25);
+    var max = Math.floor(containerSizeXUnits * 0.4);
 
 
-    //  SETS the size of the scalebar container to 30% of the container;
-    $("#scale-bar").css("width", $("#micro-container").width() * .3 + "px");
+    var lengthPx = (roundToClosest(min) / containerSizeXUnits) * container.getSizeX();
+    $('#scale-bar-inner-bar').css('width', lengthPx);
+    $('#scale-bar-text').text(roundToClosest(min))
 
-    // GETS the width of the black scalebar in px
-    var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
-    // Gets the the length of the black scalebar as a %
-    var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / mg.sizeX;
-    // Gets the number of units to display for that lenght of scalebar.
-    var scaleBarLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.scaleImageRatio) * scaleBar.imageScaleBarUnits;
-    // update html number
-    $("#scale-bar-text").html(Math.round(scaleBarLengthUnits));
+
+    console.log('container', container.getSizeX());
+    console.log('containerSizeXUnits', containerSizeXUnits);
+    console.log('min', min);
+    console.log('min', max);
+    console.log('lengthPx', lengthPx);
+
+
+    // go up from the min, go up down from the max;
+
+    // //  SETS the size of the scalebar container to 30% of the container;
+    // $("#scale-bar").css("width", $("#micro-container").width() * .3 + "px");
+
+    // // GETS the width of the black scalebar in px
+    // var scaleBarInnerLengthPx = $("#scale-bar-inner-bar").width();
+    // // Gets the the length of the black scalebar as a %
+    // var scaleBarInnerPercentofBgImage = scaleBarInnerLengthPx / mg.sizeX;
+    // // Gets the number of units to display for that lenght of scalebar.
+    // var scaleBarLengthUnits = (scaleBarInnerPercentofBgImage / scaleBar.givenScaleContainerPerc) * scaleBar.imageScaleBarUnits;
+    // // update html number
+    // $("#scale-bar-text").html(Math.round(scaleBarLengthUnits));
+}
+
+function roundToClosest(num) {
+    var numStr = num.toString();
+    var divisor = '';
+    divisor += numStr[0];
+    for (var i = 1; i < num.toString().length; i++) {
+        divisor += '0'
+    }
+    var divisor = parseInt(divisor);
+    return Math.round(num / divisor) * divisor;
 }
 
 function setClickforScalebarListener() {
@@ -238,6 +266,9 @@ function setClickforScalebarListener() {
         });
     });
 }
+
+
+
 
 
 
