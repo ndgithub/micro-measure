@@ -201,11 +201,17 @@ function updateUiScaleBar() {
 
 
   var targetLength = containerSizeXUnits * 0.25;
+  console.log('targetLength', targetLength);
 
-  var scalebarLengths = [0, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500, 1000, 5000];
-  var setLength_Units = '0.'.split('');
-  // ['0','.']
+
+  var scalebarLengths = [1, 5, 10, 50, 100, 500, 1000, 5000];
+  var setLength_Units;
+
   if (targetLength < 1) {
+    // In case it's in scientific notation
+    targetLength = targetLength.toFixed(20)
+    var setLength_Units = '0.'.split('');
+
     var targString = targetLength.toString();
     for (let i = 2; i < targString.length; i++) {
       const digit = targString[i];
@@ -221,32 +227,32 @@ function updateUiScaleBar() {
         setLength_Units.push('0');
       }
     }
-    console.log('asdf1', setLength_Units);
-    setLength_Units = setLength_Units.join("");
-    console.log('asdf', setLength_Units);
-    // console.log('numZeros', numZeros);
-    // var roundFactor = '10';
-    // for (let i = 0; i < numZeros; i++) {
-    //   roundFactor += '0';
-    // }
-    // console.log(roundFactor);
-    // setLength_Units = Math.round(parseInt(roundFactor) * targetLength) / parseInt(roundFactor);
-
-
-    console.log(targString); // this is 0.76345345
-    console.log('setLength_Units', setLength_Units); // 0.76
-
-
-    // Math.round(10*0.07)/10
-
+    setLength_Units = parseFloat(setLength_Units.join(""));
   } else {
-    for (let i = 0; i < scalebarLengths.length; i++) {
-      if (targetLength > scalebarLengths[i]) {
-        setLength_Units = scalebarLengths[i];
-      }
+    setLength_Units = '';
+    targetLength = parseInt(targetLength).toString();
+    console.log('targetLength', targetLength);
+    console.log('targetLength[0]', targetLength[0]);
+    if (targetLength[0] >= 5) {
+      setLength_Units += '5';
+    } else {
+      setLength_Units += '1';
     }
+    console.log('**targetLength', targetLength);
+    for (let i = 1; i < targetLength.length; i++) {
+      setLength_Units += '0';
+    }
+    console.log(setLength_Units);
+    setLength_Units = parseInt(setLength_Units);
+
+
+    // for (let i = 0; i < scalebarLengths.length; i++) {
+    //   if (targetLength > scalebarLengths[i]) {
+    //     setLength_Units = scalebarLengths[i];
+    //   }
+    // }
   }
-  var setLength_Px = (parseFloat(setLength_Units) / containerSizeXUnits) * container.getSizeX();
+  var setLength_Px = (setLength_Units / containerSizeXUnits) * container.getSizeX();
 
   console.log('containerSizeXUnits', containerSizeXUnits);
 
