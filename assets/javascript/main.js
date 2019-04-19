@@ -98,27 +98,6 @@ var ui = {
   },
 
 }
-console.log('x ' + mg.sizeX);
-console.log('y ' + mg.sizeY);
-mg.setInitSize(ui.getContainerSizeX(), ui.getContainerSizeY());
-mg.setInitPos(ui.getContainerSizeX(), ui.getContainerSizeY());
-console.log("x" + mg.sizeX);
-console.log("y" + mg.sizeY);
-ui.setImageSize(mg.sizeX, mg.sizeY); // updates image size in UI
-ui.setImagePos(mg.posX, mg.posY);
-
-
-
-
-
-setHoverListener(); // sets isHovering to true if hovering o #micro-contiainer
-setKeysForZoomListener(); // Set a keypress listener on the body for zoom and scroll
-setClickforScalebarListener();//Set a click listener on #micro-container to set scalebar ration points. Turns itself off after two clicks.
-makeDraggable();
-
-wheeling();
-
-
 
 function wheeling() {
   $("#micro-container").on("mousewheel", function (event) {
@@ -138,25 +117,18 @@ function wheeling() {
     var old_containerCenterX_relToImgCorner_percent = ((container.getSizeX() / 2) - mg.posX) / old_sizeX;
     var old_containerCenterY_relToImgCorner_percent = ((container.getSizeY() / 2) - mg.posY) / old_sizeY;
 
-    var new_pointToKeepCenteredX_ReltoImage_pixels = old_containerCenterX_relToImgCorner_percent * mg.sizeX;
     var new_pointToKeepCenteredX_ReltoContainer_pixels = (old_containerCenterX_relToImgCorner_percent * mg.sizeX) + mg.posX;
     var offsetX = new_pointToKeepCenteredX_ReltoContainer_pixels - (container.getSizeX() / 2);
     mg.posX -= offsetX;
 
-    var new_pointToKeepCenteredY_ReltoImage_pixels = old_containerCenterY_relToImgCorner_percent * mg.sizeY;
     var new_pointToKeepCenteredY_ReltoContainer_pixels = (old_containerCenterY_relToImgCorner_percent * mg.sizeY) + mg.posY;
     var offsetY = new_pointToKeepCenteredY_ReltoContainer_pixels - (container.getSizeY() / 2);
     mg.posY -= offsetY;
 
     ui.setImageSize(mg.sizeX, mg.sizeY);
     ui.setImagePos(mg.posX, mg.posY);
-
-
-
-
   });
 }
-
 
 function resetClickPoints() {
   scaleBar.isSet = false;
@@ -188,23 +160,11 @@ function onScalebarSet() {
 function updateUiScaleBar() {
   var rawInput = scaleBar.imageScaleBarUnits;
   var percentOfImageOfInputPoints = scaleBar.givenScaleImgPerc;
-
   var imageContainerRatio = mg.sizeX / container.getSizeX(); // Changes on zoom
-  console.log('imageContainerRatio', imageContainerRatio);
   var imageSizeUnits = rawInput / percentOfImageOfInputPoints; //Never changes
-  console.log('imageSizeUnits', imageSizeUnits);
   var containerSizeXUnits = imageSizeUnits / imageContainerRatio;
-  console.log('containerSizeXUnits', containerSizeXUnits);
+  targetLength = containerSizeXUnits * 0.3;
 
-
-  // *******************in replit *************
-
-
-  var targetLength = containerSizeXUnits * 0.25;
-  console.log('targetLength', targetLength);
-
-
-  var scalebarLengths = [1, 5, 10, 50, 100, 500, 1000, 5000];
   var setLength_Units;
 
   if (targetLength < 1) {
@@ -231,89 +191,24 @@ function updateUiScaleBar() {
   } else {
     setLength_Units = '';
     targetLength = parseInt(targetLength).toString();
-    console.log('targetLength', targetLength);
-    console.log('targetLength[0]', targetLength[0]);
     if (targetLength[0] >= 5) {
       setLength_Units += '5';
     } else {
       setLength_Units += '1';
     }
-    console.log('**targetLength', targetLength);
     for (let i = 1; i < targetLength.length; i++) {
       setLength_Units += '0';
     }
-    console.log(setLength_Units);
     setLength_Units = parseInt(setLength_Units);
-
-
-    // for (let i = 0; i < scalebarLengths.length; i++) {
-    //   if (targetLength > scalebarLengths[i]) {
-    //     setLength_Units = scalebarLengths[i];
-    //   }
-    // }
   }
   var setLength_Px = (setLength_Units / containerSizeXUnits) * container.getSizeX();
 
-  console.log('containerSizeXUnits', containerSizeXUnits);
-
-
   $('#scale-bar-inner-bar').css('width', setLength_Px);
-  console.log('setLength_Px', setLength_Px)
   $('#scale-bar-text').text(setLength_Units);
 
+  console.log('hello', mg);
 
 
-
-  //   var targetLength = containerSizeXUnits * 0.25;
-  //   var max = containerSizeXUnits * 0.4;
-
-  //   var scalebarLengths = [0, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500, 1000, 5000];
-  //   var setLength;
-  //   console.log('min1', targetLength);
-  //   if (targetLength < 1) {
-  //     var targString = targetLength.toString();
-  //     console.log('targString', targString);
-  //     var roundTh = 0;
-  //     for (let i = 0; i < targString.length; i++) {
-  //       const digit = targString[i];
-  //       if (digit === '0') {
-  //         roundTh++;
-  //       } else {
-  //         break;
-  //       }
-  //     }
-  //     var roundFactor = '10';
-  //     for (let i = 0; i < roundTh; i++) {
-  //       roundFactor += '0';
-  //     }
-  //     setLength = Math.round(parseInt(roundFactor, 10) * targetLength) / parseInt(roundFactor, 10);
-  //     console.log('roundFactor', roundFactor);
-  //     console.log('setLength1', setLength);
-  //     // Math.round(10*0.07)/10
-
-  //   } else {
-  //     for (let i = 0; i < scalebarLengths.length; i++) {
-  //       if (targetLength > scalebarLengths[i]) {
-  //         setLength = scalebarLengths[i];
-  //       }
-  //     }
-  //   }
-  //   var lengthPx = (setLength / containerSizeXUnits) * container.getSizeX();
-  //   console.log('setLength2', setLength);
-  //   console.log('lengthPx', lengthPx);
-
-  //   $('#scale-bar-inner-bar').css('width', lengthPx);
-  //   $('#scale-bar-text').text(setLength);
-
-
-  //   // var lengthPx = (roundToClosest(min) / containerSizeXUnits) * container.getSizeX();
-  //   // $('#scale-bar-inner-bar').css('width', lengthPx);
-  //   // $('#scale-bar-text').text(roundToClosest(min))
-
-  //   console.log('min', targetLength);
-  //   console.log('min', max);
-  //   console.log('lengthPx', lengthPx);
-  // // ************ ^^ in replit ^^ *******************
 }
 
 function roundToClosest(num) {
@@ -359,10 +254,6 @@ function setClickforScalebarListener() {
 }
 
 
-
-
-
-
 function makeDraggable() {
   $("#micro-container").on("mousedown", function (event) {
     isMouseDown = true;
@@ -380,11 +271,8 @@ function makeDraggable() {
     if (isMouseDown) {
       // TODO:  use event.originalevent.movementX;
       var differenceX = event.pageX - oldX;
-      console.log('differenceX', differenceX);
       var differenceY = event.pageY - oldY;
-      // $("#micro-container").css("background-position-x", "+=" + differenceX*.1 + "px");
-      // //console.log("background-position-x" + $("#micro-container").css("background-position-x"));
-      // $("#micro-container").css("background-position-y", "+=" + differenceY*.1 + "px");
+
       mg.posX = mg.posX + differenceX;
       mg.posY = mg.posY + differenceY;
       oldX = event.pageX;
@@ -472,61 +360,33 @@ function setHoverListener() {
 
     }
   );
-
-
-
-
 }
-
 
 function onFileUpload() {
   var file = document.querySelector('input[type=file]').files[0];
   var reader = new FileReader();
 
   reader.addEventListener("load", function () {
-    console.log('asdf');
     var fileSrc = reader.result;
-    console.log('fileSrc', fileSrc);
-
-
-    // imgData = getBase64Image(fileSrc);
-    // localStorage.setItem("imgData", imgData);
-
-
     $('#micro-container').css('background-image', "url( " + fileSrc + ")");
   }, false);
-  if (file) {
-    reader.readAsDataURL(file);
-  }
 }
 
+function init() {
+  mg.setInitSize(ui.getContainerSizeX(), ui.getContainerSizeY());
+  mg.setInitPos(ui.getContainerSizeX(), ui.getContainerSizeY());
 
-// bannerImage = document.getElementById('bannerImg');
-// imgData = getBase64Image(bannerImage);
-// localStorage.setItem("imgData", imgData);
+  ui.setImageSize(mg.sizeX, mg.sizeY); // updates image size in UI
+  ui.setImagePos(mg.posX, mg.posY);
 
-// function getBase64Image(img) {
-//     var canvas = document.createElement("canvas");
-//     canvas.width = img.width;
-//     canvas.height = img.height;
+  setHoverListener(); // sets isHovering to true if hovering o #micro-contiainer
+  setKeysForZoomListener(); // Set a keypress listener on the body for zoom and scroll
+  setClickforScalebarListener();//Set a click listener on #micro-container to set scalebar ration points. Turns itself off after two clicks.
+  makeDraggable();
+  wheeling();
+}
 
-//     var ctx = canvas.getContext("2d");
-//     ctx.drawImage(img, 0, 0);
-
-//     var dataURL = canvas.toDataURL("image/png");
-
-//     return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-// }
+init();
 
 
-//Todos------------------
-// Make Escape Key reset image (zoom out and center)
-// Thing that show this is original image size
-// MVP - Just scalebar and load image. After MVP, save image.
-// remove draggability when not hovering .
 
-
-// for mv:
- // bg postion x diviv
-
- // If you click set scalebar, dragging the image shouldn't count as a click.
