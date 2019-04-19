@@ -10,9 +10,10 @@
   <!--Stylesheets-->
   <link rel="stylesheet" type="text/css" media="screen" href="assets/css/reset.css" />
   <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
-
   <link rel="stylesheet" type="text/css" media="screen"
     href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+
+
 </head>
 
 <body>
@@ -20,6 +21,7 @@
   <div id="sidebar">
     <button id="set-scalebar-button" class="btn btn-primary">Set Scalebar</button>
     <div id="scalebar-info"></div>
+    <input type="file" onchange="onFileUpload()">
   </div>
   <div id="micro-container">
     <div id="scale-bar">
@@ -30,7 +32,9 @@
 
 
 
-  <!-- Scripts -->
+  <!----------------------------------- Scripts ------------------------------------>
+
+  <!-- Other Scripts -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"

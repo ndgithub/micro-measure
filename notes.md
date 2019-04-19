@@ -4,8 +4,8 @@
 
 # Scalebar
 ## Scaling
-* Have a min length and max length. 
-* keep the same number between the max and min
+* Have a target lenght based on width
+* round to closest preset (1,5,10,50,100)
 
 ## Input
 1. user enters a size
